@@ -1,0 +1,15 @@
+@function is-string($value) {
+  @return type-of($value) == 'string';
+}
+
+@function is-number($value) {
+  @return type-of($value) == 'number';
+}
+
+@function is-map($value) {
+  @return type-of($value) == 'map';
+}
+
+@function to-string($value) {
+  @return inspect($value);
+}

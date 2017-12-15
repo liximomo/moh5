@@ -1,0 +1,41 @@
+.u-hide {
+  display: none !important;
+}
+
+.u-hidden {
+  visibility: hidden !important;
+}
+
+.u-hideIfEmpty:empty {
+  display: none !important;
+}
+
+.u-inline {
+  display: inline !important;
+}
+
+.u-inlineBlock {
+  display: inline-block !important;
+}
+
+.u-block {
+  display: block !important;
+}
+
+@media screen and (max-width: $screen-sm-max) {
+  .u-sm-hide {
+    display: none !important;
+  }
+}
+
+@media screen and (max-width: $screen-md-max) {
+  .u-md-hide {
+    display: none !important;
+  }
+}
+
+@media screen and (max-width: $screen-lg-max) {
+  .u-lg-hide {
+    display: none !important;
+  }
+}

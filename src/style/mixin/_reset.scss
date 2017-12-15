@@ -1,0 +1,27 @@
+// resetText($font-family-base: $font-family-base, $line-height-base: $line-height-base)
+//
+// 长方形
+//
+// $font-family-base 	 - 字体.
+// $line-height-base   - 行高.
+//
+// Styleguide Sass.mixins.shape.rectangle
+@mixin resetText($font-family-base: $font-family-base, $line-height-base: $line-height-base) {
+  font-family: $font-family-base;
+  // We deliberately do NOT reset font-size.
+  font-style: normal;
+  font-weight: normal;
+  letter-spacing: normal;
+  line-break: auto;
+  -webkit-line-break: auto;
+  line-height: $line-height-base;
+  text-align: left; // Fallback for where `start` is not supported
+  text-align: start;
+  text-decoration: none;
+  text-shadow: none;
+  text-transform: none;
+  white-space: normal;
+  word-break: normal;
+  word-spacing: normal;
+  word-wrap: normal;
+}

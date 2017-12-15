@@ -1,0 +1,11 @@
+$col-item-num: 4;
+$gap: 10px;
+
+.ComponentGallery {
+  padding: 10px 0;
+  user-select: none;
+}
+
+.ComponentItem {
+  margin-right: $gap;
+}

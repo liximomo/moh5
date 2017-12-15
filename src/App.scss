@@ -1,0 +1,30 @@
+:root {
+  --right-side-width: 350px; 
+}
+
+$grid-cell-size: 4px;
+$grid-line-width: 1px;
+
+.App {
+}
+
+.Explorer {
+  width: 100%;
+  overflow-y: hidden;
+}
+
+.APP__fixSide {
+  position: absolute;
+  width: var(--right-side-width);
+  right: 0;
+  height: 100%;
+  overflow-y: scroll;
+}
+
+.zone.is-dragActive {
+  background: gray;
+}
+
+.zone.is-dragDisable {
+  background: black;
+}

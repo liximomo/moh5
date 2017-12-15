@@ -1,0 +1,27 @@
+@mixin n-items($n, $successor: &) {
+  &:first-child:nth-last-child(#{$n}),
+  &:first-child:nth-last-child(#{$n}) ~ #{$successor} {
+    @content; 
+  }
+}
+
+@mixin least-items($n, $successor: &) {
+  &:first-child:nth-last-child(n+#{$n}),
+  &:first-child:nth-last-child(n+#{$n}) ~ #{$successor} {
+    @content; 
+  }
+}
+
+@mixin most-items($n, $successor: &) {
+  &:first-child:nth-last-child(-n+#{$n}),
+  &:first-child:nth-last-child(-n+#{$n}) ~ #{$successor} {
+    @content; 
+  }
+}
+
+@mixin between-items($l, $r, $successor: &) {
+  &:first-child:nth-last-child(n+#{$l}):nth-last-child(-n+#{$r}),
+  &:first-child:nth-last-child(n+#{$l}):nth-last-child(-n+#{$r}) ~ #{$successor} {
+    @content; 
+  }
+}

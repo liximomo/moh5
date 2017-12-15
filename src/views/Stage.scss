@@ -1,0 +1,17 @@
+$grid-cell-size: 4px;
+$grid-line-width: 1px;
+
+.Stage {
+  border-left: 1px #ddd solid;
+  border-right: 1px #ddd solid;
+  position: absolute;
+  left: 0;
+  right: var(--right-side-width);
+  height: 100%;
+  overflow-y: scroll;
+
+  background:
+    linear-gradient(to right, #ddd, #ddd $grid-line-width, transparent 0, transparent),
+    linear-gradient(to bottom, #ddd, #ddd $grid-line-width, transparent 0, transparent);
+  background-size: $grid-cell-size 100%, 100% $grid-cell-size;
+}

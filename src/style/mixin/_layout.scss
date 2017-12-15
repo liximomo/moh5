@@ -1,0 +1,47 @@
+@mixin makeWrapper($min-width, $width) {
+  margin: 0 auto;
+  min-width: $min-width;
+  width: $width;
+  @media (max-width: $screen-xs-max) {
+    width: 100%;
+  }
+}
+
+@mixin center-by-margin($width, $height) {
+  width: $width;
+  height: $height;
+  overflow: hidden;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -$width / 2;
+  margin-top: -$height / 2;
+}
+
+@mixin horizen-center-by-margin($width) {
+  width: $width;
+  overflow-x: hidden;
+  position: absolute;
+  left: 50%;
+  margin-left: -$width / 2;
+}
+
+@mixin aspect-ratio($width, $height, $child: '.media', $strict: false) {
+  position: relative;
+  width: 100%;
+  padding-top: ($height / $width) * 100%;
+  background: rgba(0,0,0,.05);
+
+  @if $strict == true {
+    max-width: $width;
+    max-height: $height;
+  }
+
+  #{$child} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%; 
+  }
+}

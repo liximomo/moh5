@@ -1,0 +1,139 @@
+$borderSize: 1px;
+
+@mixin arrow-right(
+  $size,
+  $color,
+  $borderColor: transparent
+) {
+  $outterSize: $size + $borderSize * 1.41; // sqrt(2) == 1.41;
+
+  &,
+  &:after {
+    position: absolute;
+    display: block;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+  }
+
+  // outer
+  & {
+    border-width: $outterSize;
+  }
+
+  // inner
+  &:after {
+    content: " ";
+    border-width: $size;
+  }
+
+  & {
+    top: 50%;
+    right: -$outterSize;
+    margin-top: -$outterSize;
+    border-right-width: 0;
+    border-left-color: $borderColor;
+  }
+
+  &:after {
+    top: -$outterSize;
+    left: -$outterSize;
+    margin-top: $borderSize;
+    // bottom: $size - $outterSize;
+    border-right-width: 0;
+    border-left-color: $color;
+  }
+}
+
+@mixin arrow-top(
+  $size,
+  $color,
+  $borderColor: transparent
+) {
+  $outterSize: $size + $borderSize * 1.41; // sqrt(2) == 1.41;
+
+  &,
+  &:after {
+    position: absolute;
+    display: block;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+  }
+
+  // outer
+  & {
+    border-width: $outterSize;
+  }
+
+  // inner
+  &:after {
+    content: " ";
+    border-width: $size;
+  }
+
+  & {
+    left: 50%;
+    top: -$outterSize;
+    margin-left: -$outterSize;
+    border-top-width: 0;
+    border-bottom-color: $borderColor;
+  }
+
+  &:after {
+    left: -$outterSize;
+    bottom: -$outterSize;
+    margin-left: $borderSize;
+    // bottom: $size - $outterSize;
+    border-top-width: 0;
+    border-bottom-color: $color;
+  }
+}
+
+@mixin arrow-bottom(
+  $size,
+  $color,
+  $borderColor: transparent
+) {
+  $outterSize: $size + $borderSize * 1.41; // sqrt(2) == 1.41;
+
+  &,
+  &:after {
+    position: absolute;
+    display: block;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+  }
+
+  // outer
+  & {
+    border-width: $outterSize;
+  }
+
+  // inner
+  &:after {
+    content: " ";
+    border-width: $size;
+  }
+
+  & {
+    left: 50%;
+    bottom: -$outterSize;
+    margin-left: -$outterSize;
+    border-bottom-width: 0;
+    border-top-color: $borderColor;
+  }
+
+  &:after {
+    left: -$outterSize;
+    top: -$outterSize;
+    margin-left: $borderSize;
+    // bottom: $size - $outterSize;
+    border-bottom-width: 0;
+    border-top-color: $color;
+  }
+}

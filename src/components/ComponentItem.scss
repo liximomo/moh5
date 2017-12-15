@@ -1,0 +1,10 @@
+$size: 48px;
+
+.ComponentItem {
+  width: $size;
+  line-height: $size;
+  height: $size;
+  border: 1px solid;
+  border-radius: 4px;
+  text-align: center;
+}

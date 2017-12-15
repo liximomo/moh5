@@ -1,0 +1,36 @@
+$symbolMap: ('px': '', '%': 'pct', '.': 'p');
+
+@mixin map2Style($map, $precede-property-list: (), $prefix: '') {
+  @each $property, $value in $map {
+    $property-list: append($precede-property-list, $property);
+    @if startWith($property, '@') {
+      $property-list: $precede-property-list;
+    }
+
+    @if is-map($value) {
+      @include map2Style($value, $property-list, $prefix);
+    } @else {
+      @each $val in $value {
+        $camlizeProperty: camelize-list($property-list);
+        $selectorStart: '.' + $prefix + $camlizeProperty;
+        $selectorStart1x: '.' + $prefix + '1x-' + $camlizeProperty;
+        $selectorStart2x: '.' + $prefix + '2x-' + $camlizeProperty;
+        $property: kebab-case-list($property-list);
+
+        @if is-number($val) {
+          $unit: unit($val);
+          $escapePoint: str-replace(to-string($val), '.', map-get($symbolMap, '.'));
+          $escapeUnit: str-replace($escapePoint, $unit, map-get($symbolMap, $unit));
+          $selector: $selectorStart + $escapeUnit;
+          #{$selector} {
+            #{$property}: #{$val} !important;
+          }
+        } @else {
+          #{$selectorStart}#{capitalize($val)} {
+            #{$property}: $val !important;
+          }
+        }
+      }
+    }
+  }
+}

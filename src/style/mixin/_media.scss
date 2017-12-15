@@ -1,0 +1,19 @@
+// parent container need to set overflow-x: hidden;
+@mixin horizontal-center-clip ($width) {
+  width: $width;
+  overflow-x: hidden;
+  position: relative;
+  left: 50%;
+  margin-left: -$width / 2;
+
+  img,
+  video,
+  iframe,
+  object,
+  embed,
+  .media {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}

@@ -1,0 +1,51 @@
+// @mixin trangle-top($color, $size, $left) {
+//   &:after {
+//     content: " ";
+//     display: block;
+//     border: $size / 2 solid;
+//     border-color: transparent transparent $color transparent;
+//     position: absolute;
+//     top: #{-$size};
+//     left: $left;
+//   }
+// }
+
+// @mixin trangle-bot($color, $size, $left) {
+//   &:after {
+//     content: " ";
+//     display: block;
+//     border: $size / 2 solid;
+//     border-color: $color transparent transparent transparent;
+//     position: absolute;
+//     bottom: #{-$size};
+//     left: $left;
+//   }
+// }
+
+
+@mixin close($size: 20px) {
+  vertical-align: middle;
+  cursor: pointer;
+  background: $color-gray;
+  color: white;
+  border-radius: 50%;
+  width: $size;
+  text-align: center;
+}
+
+
+@mixin flag($pic, $corner) {
+  display: block;
+  position: absolute;
+  width: 43px;
+  height: 20px;
+  background: url($pic);
+  top: 0px;
+  @if $corner == 'left' {
+    left: -30px;
+  }
+  @if $corner == 'right' {
+    left: auto;
+    right: 30px;
+  }
+}

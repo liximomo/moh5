@@ -1,0 +1,22 @@
+// clearfix()
+//
+// 当子元素为浮动元素时，修复自身高度无法被撑开
+// 
+// Styleguide Sass.mixins.util.clearfix
+@mixin clearfix() {
+  &:before,
+  &:after {
+    content: " "; // 1
+    display: table; // 2
+  }
+  &:after {
+    clear: both;
+  }
+}
+
+@mixin opacity($opacity) {
+  opacity: $opacity;
+  // IE8 filter
+  $opacity-ie: ($opacity * 100);
+  filter: alpha(opacity=$opacity-ie);
+}

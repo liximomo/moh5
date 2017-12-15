@@ -1,0 +1,12 @@
+// size($width, $height: $width)
+//
+// 设计宽高
+//
+// $width 	 - 宽.
+// $height   - 高. 缺省则等于宽
+//
+// Styleguide Sass.mixins.size
+@mixin size($width, $height: $width) {
+  width: $width;
+  height: $height;
+}

@@ -1,0 +1,27 @@
+@function contain($list, $value) {
+  @return not not index($list, $value);
+}
+
+@function kebab-case-list($strList) {
+  $result: nth($strList, 1);
+  $i: 2;
+  @while $i <= length($strList) {
+    $str: nth($strList, $i);
+    $result: $result + '-' + $str;
+    $i: $i + 1;
+  }
+
+  @return $result;
+}
+
+@function camelize-list($strList) {
+  $result: nth($strList, 1);
+  $i: 2;
+  @while $i <= length($strList) {
+    $str: nth($strList, $i);
+    $result: $result + capitalize($str);
+    $i: $i + 1;
+  }
+
+  @return $result;
+}

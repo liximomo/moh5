@@ -1,0 +1,39 @@
+@function startWith($str, $char) {
+  @return str-slice($str, 1, 1) == $char;
+}
+
+@function str-replace($string, $search, $replace: '') {
+  $index: str-index($string, $search);
+
+  @if $index {
+    @return str-slice($string, 1, $index - 1) + $replace + str-replace(str-slice($string, $index + str-length($search)), $search, $replace);
+  }
+
+  @return $string;
+}
+
+@function capitalize($string) {
+  @if not is-string($string) {
+    @return $string;
+  }
+
+  @return to-upper-case(str-slice($string, 1, 1)) + str-slice($string, 2);
+}
+
+@function camelize($string, $split-chars: (' ', '-', '–', '—', '_', ',', ';', ':', '.')) {
+  $progress: $string;
+  $result: '';
+
+  @while str-length($progress) > 0 {
+    $char: str-slice($progress, 1, 1);
+
+    @if contain($split-chars, $char) {
+      $progress: capitalize(str-slice($progress, 2, 2)) + str-slice($progress, 3);
+    } @else {
+      $result: $result + $char;
+      $progress: str-slice($progress, 2);
+    }
+  }
+
+  @return $result;
+}

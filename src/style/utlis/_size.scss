@@ -1,0 +1,21 @@
+$sizeList: 32, 36, 50, 60, 85, 100, 116;
+
+@each $size in $sizeList {
+  .u-size#{$size}x#{$size} {
+    width: #{$size}px !important; 
+    height: #{$size}px !important;
+  }
+}
+
+.u-widthFull {
+  width: 100% !important;
+}
+
+.u-heightFull {
+  height: 100% !important;
+}
+
+.u-fillParent {
+  height: 100% !important;
+  width: 100% !important;
+}

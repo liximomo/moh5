@@ -1,0 +1,94 @@
+// 单位转换
+//
+// Styleguide Sass.mixins.unit
+
+@function strip-unit($number) {
+  @return $number / ($number * 0 + 1);
+}
+
+@function cal-context($baseFontSize, $basePageWidth, $pgWidth) {
+  @return $baseFontSize * ($pgWidth / $basePageWidth);
+}
+
+// rem($pixels, $pgWidth: $pageWidth)
+//
+// px to rem，主要用于移动端屏幕适配
+//
+// $pixels 	 - 像素.
+// $pgWidth  - 设计稿宽度.
+//
+// Weight: -1
+//
+// Styleguide Sass.mixins.unit.rem
+@function rem($pixels, $pgWidth: $pageWidth) {
+  $context: cal-context(20, 320, $pgWidth);
+  @if (unitless($pixels)) {
+    $pixels: $pixels * 1px;
+  }
+
+  @if (unitless($context)) {
+    $context: $context * 1px;
+  }
+  @return ($pixels / $context) * 1rem;
+}
+
+@mixin remify($property, $values...) {
+  $max: length($values);
+  $remValues: "";
+
+  @for $i from 1 through $max {
+    $item: nth($values, $i);
+    $value: $item;
+
+    @if type-of($item) == "number" and unit($item) == "px" {
+      $value: rem($value);
+    }
+
+    $remValues: #{$remValues + $value};
+
+    @if $i < $max {
+      $remValues: #{$remValues + " "};
+    }
+  } 
+
+  #{$property}: $values;
+  #{$property}: $remValues; 
+}
+
+// px2rem($pixels, $font-size: $font-size-base)
+//
+// px to rem, 按照 font-size 进行单位转换（注意与 rem 进行区分）
+//
+// $pixels 	   - 像素.
+// $font-size  - 字体大小.
+//
+// Styleguide Sass.mixins.unit.px2rem
+@function px2rem($pixels, $font-size) {
+  @if (unitless($pixels)) {
+    $pixels: $pixels * 1px;
+  }
+
+  @if (unitless($font-size)) {
+    $font-size: $font-size * 1px;
+  }
+  @return ($pixels / $font-size) * 1rem;
+}
+
+// px2em($pixels, $font-size: $font-size-base)
+//
+// px to em, 按照 font-size 进行单位转换
+//
+// $pixels 	   - 像素.
+// $font-size  - 字体大小.
+//
+// Styleguide Sass.mixins.unit.px2em
+@function px2em($pixels, $font-size: $font-size-base) {
+  @if (unitless($pixels)) {
+    $pixels: $pixels * 1px;
+  }
+
+  @if (unitless($font-size)) {
+    $font-size: $font-size * 1px;
+  }
+  @return ($pixels / $font-size) * 1em;
+}

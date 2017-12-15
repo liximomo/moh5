@@ -1,0 +1,31 @@
+
+
+.ObjectTreeNode__dropzone {
+  opacity: 0;
+  height: 4px;
+}
+
+.ObjectTreeNode__dropzone.is-dragOver {
+  opacity: 1;
+  background-color: black;
+}
+
+.is-dragOver.ObjectTreeNode > .ObjectTreeItem > .ObjectTreeNode__title {
+  background-color: gray;
+}
+
+.is-active.ObjectTreeNode > .ObjectTreeItem > .ObjectTreeNode__title {
+  background-color: #ddd;
+}
+
+.is-dragging.ObjectTreeNode .ObjectTreeItem  {
+  > .ObjectTreeNode__title {
+    cursor: pointer;
+    opacity: 0.5;
+  }
+
+  > .ObjectTreeNode__dropzone {
+    opacity: 0;
+  }
+}
+

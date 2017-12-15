@@ -1,0 +1,286 @@
+// Sass variables
+//
+// Weight: 0
+//
+// Style guide: Sass.variables
+
+// $font-family-sans-serif
+//
+// sans-serif 字体
+//
+// Style guide: Sass.variables.font-family-sans
+$font-family-sans-serif: -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+  'Helvetica Neue', Arial, sans-serif !default;
+
+// $font-family-serif
+//
+// serif 字体
+//
+// Style guide: Sass.variables.font-family-serif
+$font-family-serif: Georgia, 'Times New Roman', Times, serif !default;
+
+// $font-family-monospace
+//
+// 等宽字体 for `<code>`, `<kbd>`, and `<pre>`
+//
+// Style guide: Sass.variables.font-family-monospace
+$font-family-monospace: Menlo, Monaco, Consolas, 'Courier New', monospace !default;
+
+// $font-family-base
+//
+// 站点基础 font-family, 默认： $font-family-sans-serif
+//
+// Style guide: Sass.variables.font-family-base
+$font-family-base: $font-family-sans-serif !default;
+
+// $font-size-base
+//
+// 基础字体大小 默认：16px
+//
+// Style guide: Sass.variables.font-size-base
+
+$font-interval: 1.33 !default;
+
+$font-size-base: 1rem !default;
+$font-size-small: $font-size-base / $font-interval !default;
+$font-size-bigger: $font-size-base * $font-interval !default;
+$font-size-biggest: $font-size-bigger * $font-interval !default;
+
+
+// $font-weight-light
+//
+// 细体字 weight 默认：300
+//
+// Style guide: Sass.variables.font-weight-light
+$font-weight-light: 300 !default;
+
+// $font-weight-normal
+//
+// 正常体 weight 默认：normal
+//
+// Style guide: Sass.variables.font-weight-normal
+$font-weight-normal: normal !default;
+
+// $font-weight-bold
+//
+// 粗体字 weight 默认：bold
+//
+// Style guide: Sass.variables.font-weight-bold
+$font-weight-bold: bold !default;
+
+// $font-weight-base
+//
+// 基础字体 weight 默认：$font-weight-normal
+//
+// Style guide: Sass.variables.font-weight-base
+$font-weight-base: $font-weight-normal !default;
+
+// $line-height-base
+//
+// 行高 默认：1.5
+//
+// Style guide: Sass.variables.line-height-base
+$line-height-base: 1.5 !default;
+
+// color
+//
+// Style guide: Sass.variables.color
+
+// $white
+//
+// 白色 默认：#fff
+//
+// Markup:
+// <div style="border: 1px solid; height: 100px; width: 100px; background-color:#fff"></div>
+//
+// Style guide: Sass.variables.color.white
+$white: #fff !default;
+
+// $black
+//
+// 黑色 默认：#000
+//
+// Markup:
+// <div style="border: 1px solid; height: 100px; width: 100px; background-color:#000"></div>
+//
+// Style guide: Sass.variables.color.black
+$black: #000 !default;
+
+$red: #d9534f !default;
+$orange: #f0ad4e !default;
+$yellow: #ffd500 !default;
+$green: #5cb85c !default;
+$blue: #0275d8 !default;
+$teal: #5bc0de !default;
+$pink: #ff5b77 !default;
+$purple: #613d7c !default;
+
+// $color-primary
+//
+// 主色
+//
+// Style guide: Sass.variables.color.primary
+$color-primary: #d94b41 !default;
+
+// Create grayscale
+$color-gray-dark: #292b2c !default;
+$color-gray: #464a4c !default;
+$color-gray-light: #1a2933 !default;
+$color-gray-lighter: #bfbec0 !default;
+$color-gray-lightest: #d8d8d8 !default;
+
+// $color-placeholder
+//
+// 站位色
+//
+// Style guide: Sass.variables.color.placeholder
+$color-placeholder: rgba(0, 0, 0, 0.05) !default;
+
+// screen define
+// Width of the content area
+$screen-size-xs: 400px;
+$screen-size-sm: 767px;
+
+//== Media queries breakpoints
+//
+//## Define the breakpoints at which your layout will change, adapting to different screen sizes.
+
+// $screen-xs-min
+//
+// 小手机 移动优先 @media (min-width: $screen-sm-min)
+//
+// Style guide: Sass.variables.screen-xs-min
+$screen-xs-min: 0px !default;
+
+// $screen-sm-min
+//
+// 大手机
+//
+// Style guide: Sass.variables.screen-sm-min
+$screen-sm-min: 576px !default;
+
+// $screen-md-min
+//
+// 中等屏幕/平板
+//
+// Style guide: Sass.variables.screen-md-min
+$screen-md-min: 768px !default;
+
+// $screen-lg-min
+//
+// 大屏幕/桌面
+//
+// Style guide: Sass.variables.screen-lg-min
+$screen-lg-min: 992px !default;
+
+// $screen-lg-min
+//
+// 超大屏幕/宽屏
+//
+// Style guide: Sass.variables.screen-lg-min
+$screen-xl-min: 1200px !default;
+
+// $screen-xs-max
+//
+// 小手机 桌面优先 @media (max-width: $screen-md-max)
+//
+// Style guide: Sass.variables.screen-xs-max
+$screen-xs-max: ($screen-sm-min - 1) !default;
+
+// $screen-sm-max
+//
+// 大手机屏幕
+//
+// Style guide: Sass.variables.screen-sm-max
+$screen-sm-max: ($screen-md-min - 1) !default;
+
+// $screen-md-max
+//
+// 平板
+//
+// Style guide: Sass.variables.screen-md-max
+$screen-md-max: ($screen-lg-min - 1) !default;
+
+// $screen-md-max
+//
+// 大屏幕/桌面
+//
+// Style guide: Sass.variables.screen-md-max
+$screen-lg-max: ($screen-xl-min - 1) !default;
+
+// $page-width
+//
+// 移动端 rem 换算
+//
+// Style guide: Sass.variables.page-width
+$page-width: 750 !default;
+
+// $u-simple
+//
+// 简单通用类定义， 不要编辑和使用 u-marginBottom 相关的任何东西，只使用 marginTop!
+//
+// Style guide: Sass.variables.u-simple
+$u-simple: (
+    'margin':
+      (
+        '@': (3px, 8px),
+        'top': (0px, 5px, 10px, 15px, 20px, 25px, 30px, 40px, 50px),
+        'right': (0px, 5px, 10px, 15px, 20px, 25px, 30px, 40px, 50px),
+        'bottom': (10px, 40px),
+        'left': (0px, 5px, 10px, 15px, 20px, 25px, 30px, 40px, 50px)
+      ),
+    'padding':
+      (
+        '@': (3px, 8px, 14px),
+        'top': (0px, 5px, 10px, 15px, 20px, 25px, 30px),
+        'right': (0px, 5px, 10px, 15px, 20px, 25px, 30px),
+        'bottom': (0px, 5px, 10px, 15px, 20px, 25px, 30px),
+        'left': (0px, 5px, 10px, 15px, 20px, 25px, 30px, 40px)
+      ),
+    'border': ('width': 0px),
+    'top': (),
+    'right': (),
+    'bottom': 5px,
+    'left': (),
+    'cursor': (pointer),
+    'overflow': ('@': (scroll, hidden, visible, auto), 'y': (scroll, hidden))
+  )
+  !default;
+
+// Style guide: Sass.variables.zindex-fixed;
+$zindex-fixed: 1030 !default;
+
+// $zindex-sticky
+//
+// sticky 元素 z 索引
+//
+// Style guide: Sass.variables.zindex-sticky;
+$zindex-sticky: 1030 !default;
+
+// $zindex-modal-backdrop
+//
+// 对话框遮罩 元素 z 索引
+//
+// Style guide: Sass.variables.zindex-modal-backdrop;
+$zindex-modal-backdrop: 1040 !default;
+
+// $zindex-modal
+//
+// 对话框 元素 z 索引
+//
+// Style guide: Sass.variables.zindex-modal;
+$zindex-modal: 1050 !default;
+
+// $zindex-popover
+//
+// popover 元素 z 索引
+//
+// Style guide: Sass.variables.zindex-popover;
+$zindex-popover: 1060 !default;
+
+// $zindex-tooltip
+//
+// tooltip 元素 z 索引
+//
+// Style guide: Sass.variables.zindex-tooltip;
+$zindex-tooltip: 1070 !default;

@@ -1,0 +1,49 @@
+.EditorNode {
+  position: relative;
+  user-select: none;
+  display: inline-block;
+}
+
+.EditorNode::after {
+  content: "";
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+  touch-action: none;
+  pointer-events: none;
+  user-select: none;
+}
+
+.EditorNode > * {
+  height: 100%;
+  width: 100%;
+}
+
+.EditorNode:hover:not(.is-active)::after {
+  transition: border 0.2s ease-out;
+  border: 1px dashed green;
+}
+
+.EditorNode.is-active:not(.has-resizer)::after {
+  transition: border 0.2s ease-out;
+  border: 1px solid green;
+}
+
+.EditorNode.ArtboardNode {
+  margin-top: 10px;
+  transform: translate3d(-50%, 0,0);
+  left: 50%;
+}
+
+.EditorNode.ArtboardNode:hover::after {
+  border: none;
+}
+
+.EditorNode.ArtboardNode.is-active:not(.has-resizer)::after {
+  border: none;
+
+  transition: box-shadow 0.2s ease-out;
+  box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.39);
+}

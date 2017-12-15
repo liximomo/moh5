@@ -1,0 +1,39 @@
+$col-left-width: 240px;
+$col-right-width: 240px;
+$min-width: 1000px;
+
+html.is-drag {
+  cursor: col-resize;
+  user-select: none;
+  pointer-events: none;
+}
+
+.SplitLayout {
+  position: relative;
+  min-width: $min-width;
+  height: 100vh;
+}
+
+.SplitLayout__item {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  height: 100%;
+  // background: yellow;
+}
+
+.SplitLayout__item:first-child {
+  left: 0;
+}
+
+.SplitLayout__item + .SplitLayout__item {
+  right: 0;
+}
+
+.SplitLayout__sash {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  height: 100%;
+  cursor: col-resize;
+}

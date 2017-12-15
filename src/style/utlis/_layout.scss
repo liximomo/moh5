@@ -1,0 +1,34 @@
+// display
+.u-alignMiddle .u-alignBlock,
+.u-alignMiddle:before {
+  display: inline-block !important;
+  vertical-align: middle !important;
+}
+
+.u-alignMiddle:before {
+  content: '' !important;
+  height: 100% !important;
+}
+
+// scroll
+.u-overflowX {
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  -ms-overflow-style: -ms-autohiding-scrollbar !important;
+}
+
+.u-overflowY {
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  -ms-overflow-style: -ms-autohiding-scrollbar !important;
+}
+
+@media screen and (max-width: $screen-sm-max) {
+  .u-overflowX {
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .u-overflowY {
+    -webkit-overflow-scrolling: touch !important;
+  }
+}

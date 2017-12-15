@@ -1,0 +1,59 @@
+// custom
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: percentage(16/16);
+}
+
+body {
+  font-family: $font-family-base;
+  font-weight: $font-weight-base;
+  line-height: $line-height-base;
+
+  color: $black;
+  text-align: left; // 3
+  background-color: $white;
+
+  text-rendering: optimizeLegibility;
+  -moz-font-feature-settings: 'liga' on;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+blockquote,
+dd,
+dl,
+figure,
+form,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+menu,
+ol,
+p,
+pre,
+ul {
+  margin: 0;
+}
+
+ol,
+ul {
+  padding: 0;
+  list-style: none;
+  list-style-image: none;
+}
+
+figcaption {
+  -webkit-nbsp-mode: normal;
+}
+
+main {
+  display: block;
+}

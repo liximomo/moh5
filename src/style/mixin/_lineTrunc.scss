@@ -1,0 +1,18 @@
+@mixin lineTruncation($line, $font-size: $font-size-base, $line-height: $line-height-base) {
+  overflow: hidden;
+
+  @if $line == 1 {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  } @else {
+    $single-line-height: $line-height;
+    @if unitless($line-height) {
+      $single-line-height: $line-height * $font-size;
+    }
+    max-height: ceil($line * $single-line-height);
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: $line;
+    white-space: normal;
+  }
+}
