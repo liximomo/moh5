@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import cn from 'classnames';
 import WithTree from '@lib/Tree/WithTree';
 import { DropTarget, DragSource } from 'react-dnd';
-
+import { getEmptyImage } from 'react-dnd-html5-backend';
 import { selectElement, moveChildToAnotherBeforeIndex } from '../modules/elements';
 import { setActiveNode, selectActiveElementId } from '../modules/editor';
 
@@ -24,7 +24,6 @@ const NodeDropTarget = {
     const instance = component.decoratedComponentInstance;
     const dragItem = monitor.getItem();
 
-    console.log('drag', dragItem.id, 'to', props.id);
     if (instance.onDrop) {
       instance.onDrop(dragItem);
     }
@@ -52,15 +51,13 @@ const NodeDropTarget = {
 const Source = {
   beginDrag(props, monitor, component) {
     component.collapse();
-    return {
-      id: props.id,
-      pid: props.pid,
-    };
+    return { id: props.id, pid: props.pid, title: props.name };
   },
 };
 
 function collectSource(connect, monitor) {
   return {
+    connectDragPreview: connect.dragPreview(),
     connectDragSource: connect.dragSource(),
     isDragging: monitor.isDragging(),
   };
@@ -97,6 +94,14 @@ class ObjectTreeNode extends React.PureComponent {
     };
   }
 
+  componentDidMount() {
+    // Use empty image as a drag preview so browsers don't draw it
+    // and we can draw whatever we want on the custom drag layer instead.
+    this.props.connectDragPreview(getEmptyImage(), {
+      captureDraggingState: false,
+    });
+  }
+
   hasChildren() {
     return !this.props.isLeaf && this.props.childIds.length > 0;
   }
@@ -131,60 +136,53 @@ class ObjectTreeNode extends React.PureComponent {
     setActiveNode(id);
   };
 
-  render() {
-    const {
-      isDragOver,
-      isDragging,
-      connectDropTarget,
-      connectDragSource,
-      childIds,
-      id,
-      pid,
-      index,
-      name,
-      tree,
-      isActive,
-    } = this.props;
+  renderNode() {
+    const { isDragOver, isDragging, childIds, id, pid, index, name, tree, isActive } = this.props;
 
     const { isExpand } = this.state;
+
     // only native element nodes can now be passed to React DnD connectors
-    // So wrap it with a div
-    return connectDropTarget(
-      connectDragSource(
-        <div
-          className={cn('ObjectTreeNode', {
-            'is-dragOver': isDragOver && !isDragging,
-            'is-dragging': isDragging,
-            'is-active': isActive,
-          })}
-        >
-          <div className="ObjectTreeItem">
-            <div
-              className="ObjectTreeNode__title"
-              style={{ paddingLeft: INTENT * tree.level }}
-              onClick={this.onClick}
-            >
-              {tree.level > 1 ? (
-                <NodeDropzone className="ObjectTreeNode__dropzone" id={pid} index={index} />
-              ) : null}
-              <div>
-                <span>{name}</span>
-              </div>
-              {tree.level > 1 ? (
-                <NodeDropzone className="ObjectTreeNode__dropzone" id={pid} index={index + 1} />
-              ) : null}
+    return (
+      <div
+        className={cn('ObjectTreeNode', {
+          'is-dragOver': isDragOver && !isDragging,
+          'is-dragging': isDragging,
+          'is-active': isActive,
+        })}
+      >
+        <div className="ObjectTreeItem">
+          <div
+            className="ObjectTreeNode__title"
+            style={{ paddingLeft: INTENT * tree.level }}
+            onClick={this.onClick}
+          >
+            {tree.level > 1 ? (
+              <NodeDropzone className="ObjectTreeNode__dropzone" id={pid} index={index} />
+            ) : null}
+            <div>
+              <span>{name}</span>
             </div>
-            {this.hasChildren() && isExpand ? (
-              <div className="ObjectTreeNode__children">
-                {childIds.map((childId, index) => (
-                  <ConnectedObjectTreeNode key={childId} pid={id} id={childId} index={index} />
-                ))}
-              </div>
+            {tree.level > 1 ? (
+              <NodeDropzone className="ObjectTreeNode__dropzone" id={pid} index={index + 1} />
             ) : null}
           </div>
+          {this.hasChildren() && isExpand ? (
+            <div className="ObjectTreeNode__children">
+              {childIds.map((childId, index) => (
+                <ConnectedObjectTreeNode key={childId} pid={id} id={childId} index={index} />
+              ))}
+            </div>
+          ) : null}
         </div>
-      )
+      </div>
     );
+  }
+
+  render() {
+    const { connectDropTarget, connectDragSource } = this.props;
+
+    // So wrap it with a div
+    return connectDropTarget(connectDragSource(this.renderNode()));
   }
 }
 

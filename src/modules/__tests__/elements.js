@@ -248,7 +248,7 @@ describe('reducer', () => {
       const stateAfter = {
         node_0: {
           id: 'node_0',
-          childIds: ['node_2', 'node_3', 'node_1'],
+          childIds: ['node_2', 'node_1', 'node_3'],
         },
       };
 
@@ -257,6 +257,27 @@ describe('reducer', () => {
 
       expect(reducer(stateBefore, action)).toEqual(stateAfter);
     });
+
+    it('should move child case 1', () => {
+      const action = moveChild('node_0', 'node_2', 1);
+      const stateAfter = { node_0: { id: 'node_0', childIds: ['node_1', 'node_2', 'node_3'] } };
+
+      deepFreeze(stateBefore);
+      deepFreeze(action);
+
+      expect(reducer(stateBefore, action)).toEqual(stateAfter);
+      expect(reducer(stateBefore, action).node_0.childIds).toBe(stateBefore.node_0.childIds);
+    });
+
+    // it('should move child case 2', () => {
+    //   const action = moveChild('node_0', 'node_1', 2);
+    //   const stateAfter = { node_0: { id: 'node_0', childIds: ['node_2', 'node_3', 'node_1'] } };
+
+    //   deepFreeze(stateBefore);
+    //   deepFreeze(action);
+
+    //   expect(reducer(stateBefore, action)).toEqual(stateAfter);
+    // });
 
     it('should not move child when postion not changed', () => {
       const action = moveChild('node_0', 'node_1', 0);

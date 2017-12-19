@@ -37,6 +37,7 @@ class ObjectTreeNodeDropzone extends React.PureComponent {
     const { id, index, moveChildToAnotherBeforeIndex } = this.props;
 
     if (id !== null) {
+      console.log(dragItem.pid, dragItem.id, id, index);
       moveChildToAnotherBeforeIndex(dragItem.pid, dragItem.id, id, index);
     }
   }

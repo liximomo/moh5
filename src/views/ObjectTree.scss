@@ -19,10 +19,10 @@
 }
 
 .is-dragging.ObjectTreeNode .ObjectTreeItem  {
-  > .ObjectTreeNode__title {
-    cursor: pointer;
-    opacity: 0.5;
-  }
+  // > .ObjectTreeNode__title {
+  //   cursor: pointer;
+  //   opacity: 0.5;
+  // }
 
   > .ObjectTreeNode__dropzone {
     opacity: 0;

@@ -43,13 +43,11 @@ export default function Dragable({ type }) {
     const wrappedComponentName =
       WrappedComponent.displayName || WrappedComponent.name || 'Component';
 
-    class Component extends React.Component {
+    class Component extends React.PureComponent {
       static WrappedComponent = WrappedComponent;
       static displayName = `NodeDrop(${wrappedComponentName})`;
 
-      static propTypes = {
-        onDrop: PropTypes.func,
-      };
+      static propTypes = { onDrop: PropTypes.func };
 
       constructor(props) {
         super(props);
@@ -67,11 +65,8 @@ export default function Dragable({ type }) {
 
       getProps() {
         // const contextProps = this.context;
-        const props = {
-          // ...contextProps,
-          ...this.props,
-          ref: this.setWrappedInstance,
-        };
+        const props = { // ...contextProps,
+          ...this.props, ref: this.setWrappedInstance };
         return props;
       }
 

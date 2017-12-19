@@ -12,6 +12,7 @@ class ComponentItem extends React.Component {
 
   getDragItem() {
     return {
+      title: this.props.name,
       type: this.props.type,
       initProps: this.props.initProps,
     };

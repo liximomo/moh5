@@ -101,46 +101,32 @@ const childIds = handleActions(
       return copy;
     },
     [MOVE_CHILD]: (state, action) => {
-      const next = [];
       const { childId, toIndex } = action.payload;
 
       if (toIndex === undefined) {
         return state;
       }
 
-      let limitedIndex = Math.max(0, Math.min(toIndex, state.length - 1));
-      let reachTarget = false;
-      let reachIndex = false;
-      let index = 0;
-      while (index < state.length) {
-        const currentId = state[index];
-
-        if (currentId === childId) {
-          // 位置没变
-          if (index === limitedIndex) {
-            break;
-          }
-          reachTarget = true;
-        }
-
-        if (index === limitedIndex) {
-          reachIndex = true;
-        }
-
-        const rIndex = reachTarget ? index + 1 : index;
-        const lIndex = reachIndex ? index + 1 : index;
-        if (lIndex >= state.length) {
-          break;
-        }
-        next[lIndex] = state[rIndex];
-        index += 1;
-      }
-
-      if (!reachTarget) {
+      let targetIndex = Math.min(toIndex, state.length);
+      const srcIndex = state.findIndex(id => id === childId);
+      if (srcIndex === -1 || srcIndex === targetIndex) {
         return state;
       }
 
-      next[limitedIndex] = childId;
+      const next = state.slice(0, srcIndex).concat(state.slice(srcIndex + 1, state.length));
+
+      if (targetIndex < 0) {
+        next.unshift(childId);
+      } else if (targetIndex >= state.length) {
+        next.push(childId);
+      } else {
+        if (srcIndex > targetIndex) {
+          next.splice(targetIndex, 0, childId);
+        } else {
+          next.splice(targetIndex - 1, 0, childId);
+        }
+      }
+
       return next;
     },
   },

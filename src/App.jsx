@@ -5,6 +5,7 @@ import Toolbar from './views/Toolbar';
 import ObjectTree from './views/ObjectTree';
 // import Artboard from './views/Artboard';
 import Stage from './views/Stage';
+import DragPreview from './views/DragPreview';
 import CommonPropertyEditor from './views/PropertyEditor/CommonPropertyEditor';
 // import { selectArtBord } from './modules/elements';
 import './App.scss';
@@ -44,6 +45,7 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
+        <DragPreview/>
         <Toolbar />
         <SplitLayout
           size={this.state.size}
