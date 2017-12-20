@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
+import { Icon } from 'antd';
 import { connect } from 'react-redux';
 import cn from 'classnames';
 import WithTree from '@lib/Tree/WithTree';
@@ -21,11 +22,15 @@ const NodeDropTarget = {
     //   return;
     // }
 
-    const instance = component.decoratedComponentInstance;
     const dragItem = monitor.getItem();
 
-    if (instance.onDrop) {
-      instance.onDrop(dragItem);
+    if (component.onDrop) {
+      component.onDrop(dragItem);
+    } else {
+      const instance = component.getDecoratedComponentInstance();
+      if (instance.onDrop) {
+        instance.onDrop(dragItem);
+      }
     }
   },
   hover(props, monitor, component) {
@@ -34,8 +39,14 @@ const NodeDropTarget = {
       return;
     }
 
-    // compoent 为connectDragSource返回的高序组件，通过 decoratedComponentInstance 拿到原始组件
-    component.decoratedComponentInstance.expand();
+    if (component.onDragOver) {
+      component.onDragOver();
+    } else {
+      const instance = component.getDecoratedComponentInstance();
+      if (instance.onDragOver) {
+        instance.onDragOver();
+      }
+    }
   },
   canDrop(props, monitor) {
     // drag 和 drop 对象相同时
@@ -84,14 +95,19 @@ class ObjectTreeNode extends React.PureComponent {
     index: 0,
     isLeaf: false,
     childIds: [],
+    isDragOver: false,
+    isDragging: false,
   };
 
   constructor(props) {
     super(props);
 
     this.state = {
-      isExpand: !props.isLeaf,
+      isExpand: true,
     };
+
+    this.toggleChildren = this.toggleChildren.bind(this);
+    this.handleClick = this.handleClick.bind(this);
   }
 
   componentDidMount() {
@@ -104,6 +120,29 @@ class ObjectTreeNode extends React.PureComponent {
 
   hasChildren() {
     return !this.props.isLeaf && this.props.childIds.length > 0;
+  }
+
+  handleClick(event) {
+    event.stopPropagation();
+    const { id, setActiveNode } = this.props;
+    setActiveNode(id);
+  }
+
+  onDrop(dragItem) {
+    const { moveChildToAnotherBeforeIndex, id, childIds } = this.props;
+    moveChildToAnotherBeforeIndex(dragItem.pid, dragItem.id, id, childIds.length);
+  }
+
+  onDragOver() {
+    this.expand();
+  }
+
+  toggleChildren() {
+    this.setState(state => {
+      return {
+        isExpand: !state.isExpand,
+      };
+    });
   }
 
   expand() {
@@ -126,60 +165,74 @@ class ObjectTreeNode extends React.PureComponent {
     });
   }
 
-  onDrop(dragItem) {
-    const { moveChildToAnotherBeforeIndex, id, childIds } = this.props;
-    moveChildToAnotherBeforeIndex(dragItem.pid, dragItem.id, id, childIds.length);
+  getIntent() {
+    return INTENT * this.props.tree.level + 4;
   }
 
-  onClick = () => {
-    const { id, setActiveNode } = this.props;
-    setActiveNode(id);
-  };
+  renderChildren() {
+    const { childIds, id } = this.props;
+    const { isExpand } = this.state;
+    if (this.hasChildren() && isExpand) {
+      return (
+        <div className="ObjectTreeNode__children">
+          {childIds.map((childId, index) => (
+            <ConnectedObjectTreeNode key={childId} pid={id} id={childId} index={index} />
+          ))}
+        </div>
+      );
+    }
+
+    return null;
+  }
 
   renderNode() {
-    const { isDragOver, isDragging, childIds, id, pid, index, name, tree, isActive } = this.props;
+    const { isDragOver, isDragging, pid, index, name, tree, isActive } = this.props;
 
     const { isExpand } = this.state;
 
     // only native element nodes can now be passed to React DnD connectors
     return (
-      <div
-        className={cn('ObjectTreeNode', {
-          'is-dragOver': isDragOver && !isDragging,
-          'is-dragging': isDragging,
-          'is-active': isActive,
-        })}
-      >
-        <div className="ObjectTreeItem">
-          <div
-            className="ObjectTreeNode__title"
-            style={{ paddingLeft: INTENT * tree.level }}
-            onClick={this.onClick}
-          >
+      <div className={cn('ObjectTreeNodeWrapper')}>
+        <div
+          className={cn('ObjectTreeNode', {
+            'is-dragOver': isDragOver && !isDragging,
+            'is-dragging': isDragging,
+            'is-active': isActive,
+            'is-expand': isExpand,
+          })}
+          onClick={this.handleClick}
+        >
+          <div className="ObjectTreeItemWrapper" style={{ marginLeft: this.getIntent() }}>
             {tree.level > 1 ? (
-              <NodeDropzone className="ObjectTreeNode__dropzone" id={pid} index={index} />
+              <Fragment>
+                <NodeDropzone className="ObjectTreeNode__dropzone" id={pid} index={index} />
+                <NodeDropzone className="ObjectTreeNode__dropzone" id={pid} index={index + 1} />
+              </Fragment>
             ) : null}
-            <div>
-              <span>{name}</span>
+            <div className="ObjectTreeItem">
+              <div className="ObjectTreeItem__expandToggle"  onClick={this.toggleChildren}>
+                {this.hasChildren() ? (
+                  <Icon type="caret-right" className="Icon-toggle" />
+                ) : null}
+              </div>
+              <div className="ObjectTreeItem__title">{name}</div>
+              <div className="ObjectTreeItem__indicators">
+                <Icon type="plus" className="Icon-add" />
+              </div>
             </div>
-            {tree.level > 1 ? (
-              <NodeDropzone className="ObjectTreeNode__dropzone" id={pid} index={index + 1} />
-            ) : null}
           </div>
-          {this.hasChildren() && isExpand ? (
-            <div className="ObjectTreeNode__children">
-              {childIds.map((childId, index) => (
-                <ConnectedObjectTreeNode key={childId} pid={id} id={childId} index={index} />
-              ))}
-            </div>
-          ) : null}
         </div>
+        {this.renderChildren()}
       </div>
     );
   }
 
   render() {
-    const { connectDropTarget, connectDragSource } = this.props;
+    const { connectDropTarget, connectDragSource, tree } = this.props;
+
+    if (tree.level === 1) {
+      return connectDropTarget(this.renderNode());
+    }
 
     // So wrap it with a div
     return connectDropTarget(connectDragSource(this.renderNode()));

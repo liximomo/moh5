@@ -43,8 +43,8 @@ class ObjectTreeNodeDropzone extends React.PureComponent {
   }
 
   render() {
-    const { connectDropTarget, isDragOver, className } = this.props;
-    return connectDropTarget(<div className={cn(className, { 'is-dragOver': isDragOver })} />);
+    const { connectDropTarget, isDragOver, className, style } = this.props;
+    return connectDropTarget(<div className={cn(className, { 'is-dragOver': isDragOver })} style={style}/>);
   }
 }
 

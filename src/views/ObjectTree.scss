@@ -1,31 +1,77 @@
 
 
-.ObjectTreeNode__dropzone {
-  opacity: 0;
-  height: 4px;
-}
 
-.ObjectTreeNode__dropzone.is-dragOver {
-  opacity: 1;
-  background-color: black;
-}
+.ObjectTreeNode {
+  user-select: none;
 
-.is-dragOver.ObjectTreeNode > .ObjectTreeItem > .ObjectTreeNode__title {
-  background-color: gray;
-}
+  .Icon-add {
+    visibility: hidden;
+  }
 
-.is-active.ObjectTreeNode > .ObjectTreeItem > .ObjectTreeNode__title {
-  background-color: #ddd;
-}
+  .Icon-toggle {
+    transition: transform 0.15s ease;
+    transform: scale(0.7);
+    transform-origin: center;
+  }
 
-.is-dragging.ObjectTreeNode .ObjectTreeItem  {
-  // > .ObjectTreeNode__title {
-  //   cursor: pointer;
-  //   opacity: 0.5;
-  // }
+  &.is-active {
+    background-color: #ddd;
+  }
 
-  > .ObjectTreeNode__dropzone {
-    opacity: 0;
+  &.is-dragOver .Icon-add {
+    visibility: visible;
   }
 }
+
+
+.ObjectTreeItemWrapper {
+  position: relative;
+}
+
+.ObjectTreeItem {
+  padding: 5px 10px 5px 0px;
+  display: flex;
+  align-items: center;
+}
+
+.ObjectTreeItem__expandToggle {
+  flex: 0 0 18px;
+}
+
+.is-expand .Icon-toggle {
+  transform: rotate(45deg) scale(0.7);
+}
+
+.ObjectTreeItem__title {
+  flex: 1 1 auto;
+}
+
+.ObjectTreeItem__indicators {
+  flex: 0 0 auto;
+}
+
+.ObjectTreeNode__dropzone {
+  $height: 4px;
+
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: $height;
+
+  &.is-dragOver {
+    opacity: 1;
+    background-color: black;
+  }
+
+  &:first-child {
+    top: -$height/2;
+  }
+
+  &:not(:first-child) {
+    bottom: -$height/2;
+  }
+}
+
+
+
 
