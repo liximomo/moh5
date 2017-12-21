@@ -23,7 +23,6 @@
   }
 }
 
-
 .ObjectTreeItemWrapper {
   position: relative;
 }
@@ -51,24 +50,29 @@
 }
 
 .ObjectTreeNode__dropzone {
-  $height: 4px;
-
+  $height: 6px;
+  $bg-height: 4px;
+  user-select: none;
   position: absolute;
   opacity: 0;
+  background-repeat: no-repeat;
+  background-size: 100% $bg-height;
   width: 100%;
   height: $height;
 
   &.is-dragOver {
     opacity: 1;
-    background-color: black;
+    background-image: linear-gradient(black,black);
   }
 
   &:first-child {
-    top: -$height/2;
+    top: 0;
+    background-position: 0 0;
   }
 
   &:not(:first-child) {
-    bottom: -$height/2;
+    bottom: 0;
+    background-position: 0 100%;
   }
 }
 
