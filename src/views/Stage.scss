@@ -2,9 +2,9 @@ $grid-cell-size: 4px;
 $grid-line-width: 1px;
 
 .Stage {
+  position: absolute;
   border-left: 1px #ddd solid;
   border-right: 1px #ddd solid;
-  position: absolute;
   left: 0;
   right: var(--right-side-width);
   height: 100%;

@@ -7,7 +7,7 @@ export default class Plugin {
 
     this.type = option.type;
     this.name = option.name;
-    this.initProps = option.initProps;
+    this.defaultProps = option.defaultProps;
     this.component = option.component;
     if (option.propertyEditor && option.propertyEditor.component) {
       this.propertyEditorComponent = InjectElementProperty({
@@ -19,7 +19,7 @@ export default class Plugin {
   }
 
   getDefaultProperty() {
-    return this.initProps;
+    return this.defaultProps;
   }
 
   getComponent() {
@@ -34,7 +34,7 @@ export default class Plugin {
     return {
       type: this.type,
       name: this.name,
-      props: this.getDefaultProperty(),
+      defaultProps: this.getDefaultProperty(),
     };
   }
 

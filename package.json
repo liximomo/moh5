@@ -17,6 +17,7 @@
     "redux-thunk": "^2.2.0",
     "reselect": "^3.0.1",
     "shallowequal": "^1.0.2",
+    "styled-components": "^2.4.0",
     "whatwg-fetch": "2.0.3"
   },
   "scripts": {
@@ -67,8 +68,12 @@
     "why-did-you-update": "^0.1.0"
   },
   "jest": {
-    "collectCoverageFrom": ["src/**/*.{js,jsx,mjs}"],
-    "setupFiles": ["<rootDir>/config/polyfills.js"],
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx,mjs}"
+    ],
+    "setupFiles": [
+      "<rootDir>/config/polyfills.js"
+    ],
     "testMatch": [
       "<rootDir>/src/**/__tests__/**/*.{js,jsx,mjs}",
       "<rootDir>/src/**/?(*.)(spec|test).{js,jsx,mjs}"
@@ -86,10 +91,20 @@
     "moduleNameMapper": {
       "^react-native$": "react-native-web"
     },
-    "moduleFileExtensions": ["web.js", "mjs", "js", "json", "web.jsx", "jsx", "node"]
+    "moduleFileExtensions": [
+      "web.js",
+      "mjs",
+      "js",
+      "json",
+      "web.jsx",
+      "jsx",
+      "node"
+    ]
   },
   "babel": {
-    "presets": ["react-app"],
+    "presets": [
+      "react-app"
+    ],
     "plugins": [
       [
         "import",
@@ -107,7 +122,10 @@
     "extends": "react-app",
     "globals": {},
     "rules": {
-      "eqeqeq": ["error", "smart"],
+      "eqeqeq": [
+        "error",
+        "smart"
+      ],
       "no-unused-vars": [
         "error",
         {

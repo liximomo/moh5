@@ -5,6 +5,8 @@ const type = 'layout';
 export default {
   type,
   name: '布局',
-  initProps: {},
+  defaultProps: {
+    height: 50,
+  },
   component: Layout,
 };

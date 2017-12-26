@@ -14,7 +14,7 @@ class ComponentItem extends React.Component {
     return {
       title: this.props.name,
       type: this.props.type,
-      initProps: this.props.initProps,
+      defaultProps: this.props.defaultProps,
     };
   }
 

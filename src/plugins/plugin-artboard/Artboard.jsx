@@ -5,7 +5,6 @@ import EditorNode from '../../views/EditorNode';
 import Droppable from '../../helper/Droppable';
 import { selectArtBord, createElementAtArtBorad } from '../../modules/elements';
 import { COMPONENT_NODE } from '../../constants/TypeOfDragAndDropItem';
-import './Artboard.scss';
 
 class Artboard extends React.Component {
   static propTypes = {
@@ -14,13 +13,17 @@ class Artboard extends React.Component {
   };
 
   onDrop(dragItem) {
-    this.props.createElementAtArtBorad(dragItem.type, dragItem.initProps);
+    this.props.createElementAtArtBorad(dragItem.type, dragItem.defaultProps);
   }
 
   render() {
-    const { connectDropTarget, childIds } = this.props;
+    const { connectDropTarget, childIds, height, width } = this.props;
     return connectDropTarget(
       <div
+        style={{
+          height: height,
+          width: width,
+        }}
         className="Artboard"
       >
         {childIds.map(id => <EditorNode id={id} key={id} />)}
@@ -28,6 +31,7 @@ class Artboard extends React.Component {
     );
   }
 }
+
 
 function mapStateToProps(state) {
   // 返回一个  component node 对象

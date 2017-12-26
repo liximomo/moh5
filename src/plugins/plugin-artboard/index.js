@@ -1,3 +1,4 @@
+import './Artboard.style';
 import Artboard from './Artboard';
 import PropertyEditor from './PropertyEditor';
 import { ARTBOARD } from '../../TypeOfInternalComponent';
@@ -7,7 +8,7 @@ const type = ARTBOARD;
 export default {
   type,
   name: '画板',
-  initProps: {},
+  defaultProps: {},
   component: Artboard,
   propertyEditor: {
     component: PropertyEditor,
