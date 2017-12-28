@@ -19,7 +19,7 @@ const Outline = styled.div`
   transform: ${props => `translate3d(${props.x}px, ${props.y}px, 0)`};
   transform-origin: left top;
   transition: 0.2s ease-in-out;
-  transition-property: opacity, transform;
+  transition-property: opacity;
   border: 1px dashed green;
 `;
 

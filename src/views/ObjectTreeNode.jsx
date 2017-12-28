@@ -7,7 +7,7 @@ import WithTree from '@lib/Tree/WithTree';
 import { DropTarget, DragSource } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import { selectElement, moveChildToAnotherBeforeIndex } from '../modules/elements';
-import { setActiveNode, selectActiveElementId } from '../modules/editor';
+import { activateELement, selectActivedElementId, hoverElement, unHoverElement } from '../modules/editor';
 
 import * as definedPropTypes from '../constants/proptypes';
 import { ELEMENT_NODE } from '../constants/TypeOfDragAndDropItem';
@@ -108,6 +108,8 @@ class ObjectTreeNode extends React.PureComponent {
 
     this.toggleChildren = this.toggleChildren.bind(this);
     this.handleClick = this.handleClick.bind(this);
+    this.onMouseEnter = this.onMouseEnter.bind(this);
+    this.onMouseLeave = this.onMouseLeave.bind(this);
   }
 
   componentDidMount() {
@@ -124,8 +126,20 @@ class ObjectTreeNode extends React.PureComponent {
 
   handleClick(event) {
     event.stopPropagation();
-    const { id, setActiveNode } = this.props;
-    setActiveNode(id);
+    const { id, activateELement } = this.props;
+    activateELement({
+      elementId: id,
+    });
+  }
+
+  onMouseEnter() {
+    this.props.hoverElement({
+      elementId: this.props.id,
+    });
+  }
+
+  onMouseLeave() {
+    this.props.unHoverElement();
   }
 
   onDrop(dragItem) {
@@ -201,6 +215,8 @@ class ObjectTreeNode extends React.PureComponent {
             'is-expand': isExpand,
           })}
           onClick={this.handleClick}
+          onMouseEnter={this.onMouseEnter}
+          onMouseLeave={this.onMouseLeave}
         >
           <div className="ObjectTreeItemWrapper" style={{ marginLeft: this.getIntent() }}>
             {tree.level > 1 ? (
@@ -242,7 +258,7 @@ class ObjectTreeNode extends React.PureComponent {
 function mapStateToProps(state, ownProps) {
   // 返回一个  component node 对象
   const element = selectElement(state, ownProps.id);
-  const activeId = selectActiveElementId(state);
+  const activeId = selectActivedElementId(state);
   return {
     id: element.id,
     name: element.name,
@@ -256,7 +272,9 @@ const WithDrop = DropTarget(ELEMENT_NODE, NodeDropTarget, collectTarget)(WithDra
 const withTree = WithTree(WithDrop);
 const ConnectedObjectTreeNode = connect(mapStateToProps, {
   moveChildToAnotherBeforeIndex,
-  setActiveNode,
+  activateELement,
+  hoverElement,
+  unHoverElement,
 })(withTree);
 
 export default ConnectedObjectTreeNode;

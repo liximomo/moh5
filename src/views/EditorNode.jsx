@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 // import ResizeBox from '../libs/ResizeBox';
 import { EDITOR_NODE_ATTR } from '../constants';
 import { selectElements, updateElement } from '../modules/elements';
-import { setActiveNode, selectActiveElementId } from '../modules/editor';
+import { activateELement, selectActivedElementId } from '../modules/editor';
 import * as definedPropTypes from '../constants/proptypes';
 import PluginHub from '../plugins/PluginHub';
 import { ARTBOARD } from '../TypeOfInternalComponent';
@@ -49,8 +49,10 @@ class EditorNode extends React.PureComponent {
   onClick(event) {
     event.stopPropagation();
 
-    const { id, setActiveNode } = this.props;
-    setActiveNode(id);
+    const { id, activateELement } = this.props;
+    activateELement({
+      elementId: id,
+    });
   }
 
   handleResize(event, data) {
@@ -92,7 +94,7 @@ class EditorNode extends React.PureComponent {
     delete props.dispatch;
     delete props.isActive;
 
-    delete props.setActiveNode;
+    delete props.activateELement;
     delete props.updateElement;
 
     props.getEditorProps = this.getEditorProps;
@@ -167,7 +169,7 @@ class EditorNode extends React.PureComponent {
 function mapStateToProps(state, ownProps) {
   // 返回一个  component node 对象
   const element = selectElements(state)[ownProps.id];
-  const activeId = selectActiveElementId(state);
+  const activeId = selectActivedElementId(state);
   return {
     ...element,
     isActive: ownProps.id === activeId,
@@ -175,7 +177,7 @@ function mapStateToProps(state, ownProps) {
 }
 
 const Connected = connect(mapStateToProps, {
-  setActiveNode,
+  activateELement,
   updateElement,
 })(EditorNode);
 

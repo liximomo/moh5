@@ -6132,6 +6132,10 @@ redux-actions@^2.2.1:
     lodash-es "^4.17.4"
     reduce-reducers "^0.1.0"
 
+redux-observable@^0.17.0:
+  version "0.17.0"
+  resolved "http://registry.npm.taobao.org/redux-observable/download/redux-observable-0.17.0.tgz#23e29e3f3c39204b7ed6a14b67a29e317c03106b"
+
 redux-thunk@^2.2.0:
   version "2.2.0"
   resolved "http://registry.npm.taobao.org/redux-thunk/download/redux-thunk-2.2.0.tgz#e615a16e16b47a19a515766133d1e3e99b7852e5"
@@ -6423,6 +6427,12 @@ rx-lite-aggregates@^4.0.8:
 rx-lite@*, rx-lite@^4.0.8:
   version "4.0.8"
   resolved "http://registry.npm.taobao.org/rx-lite/download/rx-lite-4.0.8.tgz#0b1e11af8bc44836f04a6407e92da42467b79444"
+
+rxjs@^5.5.6:
+  version "5.5.6"
+  resolved "http://registry.npm.taobao.org/rxjs/download/rxjs-5.5.6.tgz#e31fb96d6fd2ff1fd84bcea8ae9c02d007179c02"
+  dependencies:
+    symbol-observable "1.0.1"
 
 safe-buffer@5.1.1, safe-buffer@^5.0.1, safe-buffer@^5.1.0, safe-buffer@^5.1.1, safe-buffer@~5.1.0, safe-buffer@~5.1.1:
   version "5.1.1"
@@ -6944,6 +6954,10 @@ sw-toolbox@^3.4.0:
   dependencies:
     path-to-regexp "^1.0.1"
     serviceworker-cache-polyfill "^4.0.0"
+
+symbol-observable@1.0.1:
+  version "1.0.1"
+  resolved "http://registry.npm.taobao.org/symbol-observable/download/symbol-observable-1.0.1.tgz#8340fc4702c3122df5d22288f88283f513d3fdd4"
 
 symbol-observable@^1.0.3:
   version "1.1.0"

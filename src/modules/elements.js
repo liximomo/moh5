@@ -1,8 +1,10 @@
 import { createAction, handleActions, combineActions } from 'redux-actions';
 import { createSelector } from 'reselect';
+import { combineEpics } from 'redux-observable';
 import { DEVICE_MAP, INIT_DEVICE } from '../constants';
 import normalizeNode from '../utils/normalizeNode';
 import * as MO from '../mo';
+import { activateELement } from './editor';
 
 const ADD_CHILD = Symbol('ADD_CHILD');
 const MOVE_CHILD = Symbol('MOVE_CHILD');
@@ -167,6 +169,13 @@ const deleteMany = (state, ids) => {
   return stateCopy;
 };
 
+
+const createElementEpic = action$ =>
+  action$.ofType(CREATE_ELEMENT)
+    .map(action => activateELement({
+      elementId: action.payload.id
+    }));
+
 export const initialState = normalizeNode(artboard);
 
 export default handleActions(
@@ -196,6 +205,8 @@ export default handleActions(
   },
   initialState
 );
+
+export const elementsEpic = combineEpics(createElementEpic);
 
 export const selectElements = state => {
   return state.elements;

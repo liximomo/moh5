@@ -1,0 +1,102 @@
+$anchor-size: 8px;
+$color: #ccc;
+
+html.is-resizing {
+  user-select: none;
+  pointer-events: none;
+}
+
+@each $cursor in nwse-resize, ns-resize, nesw-resize, ew-resize {
+  html.#{$cursor} {
+    cursor: $cursor;
+  }
+}
+ 
+.ResizeBox {
+  position: relative;
+  background-image:
+    linear-gradient(to right, $color, $color),
+    linear-gradient(to right, $color, $color),
+    linear-gradient(to bottom, $color, $color),
+    linear-gradient(to bottom, $color, $color);
+  background-position:
+    0 0,
+    0 100%,
+    0 0,
+    100% 0;
+  background-size: 100% 1px, 100% 1px, 1px 100%, 1px 100%;
+  background-repeat: no-repeat;
+}
+
+.ResizeBox__anchor {
+  position: absolute;
+  border: 1px solid $color;
+  width: $anchor-size;
+  height: $anchor-size;
+  background-color: white;
+}
+
+.ResizeBox__anchor--topLeft {
+  cursor: nwse-resize;
+  top: -$anchor-size/2;
+  left: -$anchor-size/2;
+}
+
+.ResizeBox__anchor--top {
+  cursor: ns-resize;
+  top: -$anchor-size/2;
+  left: 50%;
+  margin-left: -$anchor-size/2;
+}
+
+.ResizeBox__anchor--topRight {
+  cursor: nesw-resize;
+  top: -$anchor-size/2;
+  right: -$anchor-size/2;
+}
+
+.ResizeBox__anchor--left {
+  cursor: ew-resize;
+  top: 50%;
+  left: -$anchor-size/2;
+  margin-top: -$anchor-size/2;
+}
+
+.ResizeBox__anchor--right {
+  cursor: ew-resize;
+  top: 50%;
+  right: -$anchor-size/2;
+  margin-top: -$anchor-size/2;
+}
+
+.ResizeBox__anchor--botLeft {
+  cursor: nesw-resize;
+  bottom: -$anchor-size/2;
+  left: -$anchor-size/2;
+}
+
+.ResizeBox__anchor--bot {
+  cursor: ns-resize;
+  bottom: -$anchor-size/2;
+  left: 50%;
+  margin-left: -$anchor-size/2;
+}
+
+.ResizeBox__anchor--botRight {
+  cursor: nwse-resize;
+  bottom: -$anchor-size/2;
+  right: -$anchor-size/2;
+}
+
+// .ResizeBox__anchor--topLeft,
+// .ResizeBox__anchor--botRight {
+//   ::after,
+//   ::before {
+//     content: " ";
+//     position: absolute;
+//     width: 1px;
+//     backg
+//   }
+// }
+
+  

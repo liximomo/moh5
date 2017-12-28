@@ -1,11 +1,11 @@
 import { createStore, applyMiddleware, compose } from 'redux';
-// import { createEpicMiddleware } from 'redux-observable';
+import { createEpicMiddleware } from 'redux-observable';
 import reduxThunk from 'redux-thunk';
-import { rootReducer } from './root';
+import { rootReducer, rootEpic } from './root';
 
 const isDev = process.env.NODE_ENV === 'development';
 
-// const epicMiddleware = createEpicMiddleware(rootEpic);
+const epicMiddleware = createEpicMiddleware(rootEpic);
 
 const tryGetReduxDevTool = () => {
   return typeof window === 'object' &&
@@ -19,7 +19,7 @@ const composeEnhancers = isDev ? tryGetReduxDevTool() : compose;
 
 const enhancer = composeEnhancers(
   // Middlewar
-  applyMiddleware(reduxThunk)
+  applyMiddleware(epicMiddleware, reduxThunk)
   // applyMiddleware(epicMiddleware),
 );
 
