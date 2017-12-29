@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { selectArtBord } from '../modules/elements';
-import { activateELement } from '../modules/editor';
+import { activateELement } from '../modules/stage';
 import EditorNode from './EditorNode';
 import ElementHelper from './ElementHelper';
 // import ResizeBox from '../libs/ResizeBox';
@@ -15,19 +15,13 @@ class Stage extends React.Component {
     this.state = {
       hostNode: null,
     };
-
-    this.handleClick = this.handleClick.bind(this);
     this.setNode = this.setNode.bind(this);
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+  }
 
-  componentWillUnmount() {}
-
-  handleClick() {
-    this.props.activateELement({
-      elementId: null,
-    });
+  componentDidUpdate() {
   }
 
   setNode(node) {
@@ -40,7 +34,7 @@ class Stage extends React.Component {
   render() {
     const { hostNode } = this.state;
     return (
-      <div className="Stage" onClick={this.handleClick} ref={this.setNode}>
+      <div className="Stage" ref={this.setNode}>
         <EditorNode id={this.props.rootNodeId} />
         {hostNode ? <ElementHelper stageHostNode={hostNode} /> : null}
       </div>

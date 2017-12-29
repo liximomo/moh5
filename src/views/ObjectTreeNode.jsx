@@ -7,7 +7,7 @@ import WithTree from '@lib/Tree/WithTree';
 import { DropTarget, DragSource } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import { selectElement, moveChildToAnotherBeforeIndex } from '../modules/elements';
-import { activateELement, selectActivedElementId, hoverElement, unHoverElement } from '../modules/editor';
+import { activateELement, selectActivedElementId, hoverElement, unHoverElement } from '../modules/stage';
 
 import * as definedPropTypes from '../constants/proptypes';
 import { ELEMENT_NODE } from '../constants/TypeOfDragAndDropItem';
@@ -133,12 +133,22 @@ class ObjectTreeNode extends React.PureComponent {
   }
 
   onMouseEnter() {
+    // 根节点 或者 激活状态
+    if (!this.props.pid || this.props.isActive) {
+      return;
+    }
+
     this.props.hoverElement({
       elementId: this.props.id,
     });
   }
 
   onMouseLeave() {
+    // 根节点 或者 激活状态
+    if (!this.props.pid || this.props.isActive) {
+      return;
+    }
+
     this.props.unHoverElement();
   }
 

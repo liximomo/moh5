@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import PositionBox from '../PositionBox';
 
 import './ResizeBox.scss';
 
@@ -9,7 +10,7 @@ const DIRECTION_LEFT_RIGHT = 'DIRECTION_LEFT_RIGHT';
 const DIRECTION_TOP_BOTTOM = 'DIRECTION_TOP_BOTTOM';
 const DIRECTION_ALL = 'DIRECTION_ALL';
 
-class ResizeBox extends React.Component {
+class ResizeBox extends React.PureComponent {
   static RESIZER_TOP_LEFT = 'topLeft';
   static RESIZER_TOP = 'top';
   static RESIZER_TOP_RIGHT = 'topRight';
@@ -129,13 +130,10 @@ class ResizeBox extends React.Component {
   }
 
   render() {
-    const { width, height, resizer } = this.props;
-    if (width === undefined && height === undefined) {
-      return null;
-    }
+    const { x, y, width, height, visible, resizer } = this.props;
 
     return (
-      <div className="ResizeBox">
+      <PositionBox className="ResizeBox" x={x} y={y} width={width} height={height} visible={visible}>
         {resizerOrders.map(resizerName => {
           if (!resizer[resizerName]) {
             return null;
@@ -149,7 +147,7 @@ class ResizeBox extends React.Component {
             />
           );
         })}
-      </div>
+      </PositionBox>
     );
   }
 }

@@ -3,7 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropertyBlock from './PropertyBlock';
 import DemisionPropertyEditor from './DemisionPropertyEditor';
-import { selectActiveElement } from '../../modules/editor';
+import { selectActiveElement } from '../../modules/stage';
 import * as definedPropTypes from '../../constants/proptypes';
 import PluginHub from '../../plugins/PluginHub';
 

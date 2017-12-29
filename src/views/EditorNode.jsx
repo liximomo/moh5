@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 // import ResizeBox from '../libs/ResizeBox';
 import { EDITOR_NODE_ATTR } from '../constants';
 import { selectElements, updateElement } from '../modules/elements';
-import { activateELement, selectActivedElementId } from '../modules/editor';
+import { activateELement, elementMounted, selectActivedElementId } from '../modules/stage';
 import * as definedPropTypes from '../constants/proptypes';
 import PluginHub from '../plugins/PluginHub';
 import { ARTBOARD } from '../TypeOfInternalComponent';
@@ -46,7 +46,14 @@ class EditorNode extends React.PureComponent {
     // this.handleMouseLeave = this.handleMouseLeave.bind(this);
   }
 
+  componentDidMount() {
+    this.props.elementMounted({
+      elementId: this.props.id,
+    });
+  }
+
   onClick(event) {
+    console.log('node click');
     event.stopPropagation();
 
     const { id, activateELement } = this.props;
@@ -177,6 +184,7 @@ function mapStateToProps(state, ownProps) {
 }
 
 const Connected = connect(mapStateToProps, {
+  elementMounted,
   activateELement,
   updateElement,
 })(EditorNode);
