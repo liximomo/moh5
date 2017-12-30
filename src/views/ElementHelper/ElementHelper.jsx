@@ -1,36 +1,20 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import * as definedPropTypes from '../../constants/proptypes';
 import { EDITOR_NODE_ATTR } from '../../constants';
-import Outline from '../../components/Outline';
-import ResizeBox from '../../components/ResizeBox';
+import HelperOutline from './HelperOutline';
+import HelperResizer from './HelperResizer';
 import {
-  selectElementHelper,
   hoverElement,
   unHoverElement,
   activateELement,
 } from '../../modules/stage';
 import { updateElement } from '../../modules/elements';
+// import ResizeBox from '../../libs/ResizeBox';
 
 class ElementHelper extends React.PureComponent {
   static propTypes = {
-    activedElementId: definedPropTypes.Id,
-    hoveredElementId: definedPropTypes.Id,
     stageHostNode: PropTypes.instanceOf(HTMLElement).isRequired,
-    x: PropTypes.number,
-    y: PropTypes.number,
-    width: PropTypes.number,
-    height: PropTypes.number,
-    outline: PropTypes.bool,
-    resizer: PropTypes.bool,
-    isActiveElement: PropTypes.bool,
-    isHoverElement: PropTypes.bool,
-  };
-
-  static defaultProps = {
-    outline: false,
-    resizer: false,
   };
 
   constructor(props) {
@@ -38,21 +22,20 @@ class ElementHelper extends React.PureComponent {
 
     this.topEventListener = new Map();
     this.handleTopEvent = this.handleTopEvent.bind(this);
-    this.handleMouseEnter = this.handleMouseEnter.bind(this);
-    this.handleMouseLeave = this.handleMouseLeave.bind(this);
+    this.handleMouseOver = this.handleMouseOver.bind(this);
+    this.handleMouseOut = this.handleMouseOut.bind(this);
     this.handleClick = this.handleClick.bind(this);
-    this.handleResize = this.handleResize.bind(this);
   }
 
   componentDidMount() {
     this.props.stageHostNode.addEventListener('mouseover', this.handleTopEvent, false);
-    this.props.stageHostNode.addEventListener('mouselout', this.handleTopEvent, false);
+    this.props.stageHostNode.addEventListener('mouseout', this.handleTopEvent, false);
     this.props.stageHostNode.addEventListener('click', this.handleTopEvent, false);
   }
 
   componentWillUnmount() {
     this.props.stageHostNode.removeEventListener('mouseover', this.handleTopEvent, false);
-    this.props.stageHostNode.removeEventListener('mouselout', this.handleTopEvent, false);
+    this.props.stageHostNode.removeEventListener('mouseout', this.handleTopEvent, false);
     this.props.stageHostNode.removeEventListener('click', this.handleTopEvent, false);
   }
 
@@ -61,10 +44,10 @@ class ElementHelper extends React.PureComponent {
       if (target.matches && target.matches(`[${EDITOR_NODE_ATTR}]`)) {
         switch (event.type) {
           case 'mouseover':
-            this.handleMouseEnter(event);
+            this.handleMouseOver(event);
             break;
-          case 'mouselout':
-            this.handleMouseLeave(event);
+          case 'mouseout':
+            this.handleMouseOut(event);
             break;
           case 'click':
             this.handleClick(event);
@@ -90,24 +73,7 @@ class ElementHelper extends React.PureComponent {
     this.props.stageHostNode.removeEventListener('mouseenter', listener, useCapture);
   }
 
-  getStageArea() {
-    if (this.stageArea) {
-      return this.stageArea;
-    }
-
-    this.stageArea = this.props.stageHostNode.getBoundingClientRect();
-    return this.stageArea;
-  }
-
-  getOffset() {
-    const stageArea = this.getStageArea();
-    return {
-      x: this.props.x - stageArea.x - 1,
-      y: this.props.y - stageArea.y - 1,
-    };
-  }
-
-  handleMouseEnter(event) {
+  handleMouseOver(event) {
     const id = parseInt(event.target.getAttribute(EDITOR_NODE_ATTR), 10);
     if (id === this.props.activedElementId) {
       return;
@@ -118,7 +84,7 @@ class ElementHelper extends React.PureComponent {
     });
   }
 
-  handleMouseLeave(event) {
+  handleMouseOut(event) {
     const id = parseInt(event.target.getAttribute(EDITOR_NODE_ATTR), 10);
     if (id === this.props.activedElementId) {
       return;
@@ -142,44 +108,33 @@ class ElementHelper extends React.PureComponent {
 
   }
 
-  handleResize(event, data) {
-    this.props.updateElement(this.props.activedElementId, {
-      width: data.width,
-      height: data.height,
-    });
+  getStageArea() {
+    if (this.stageArea) {
+      return this.stageArea;
+    }
+
+    this.stageArea = this.props.stageHostNode.getBoundingClientRect();
+    return this.stageArea;
   }
 
   render() {
-    const { width, height, isActiveElement, isHoverElement, activedElementId, hoveredElementId } = this.props;
-    const offset = this.getOffset();
-
+    const parentReact = this.getStageArea();
     return (
       <div className="StageHelper">
-        <Outline
-          x={offset.x}
-          y={offset.y}
-          width={width}
-          height={height}
-          visible={isHoverElement && activedElementId !== hoveredElementId}
+        <HelperOutline
+          parentOffsetX={parentReact.x}
+          parentOffsetY={parentReact.y}
         />
-        <ResizeBox
-          x={offset.x}
-          y={offset.y}
-          width={width}
-          height={height}
-          visible={isActiveElement}
-          onResize={this.handleResize}
+        <HelperResizer
+          parentOffsetX={parentReact.x}
+          parentOffsetY={parentReact.y}
         />
       </div>
     );
   }
 }
 
-function mapStateToProps(state) {
-  return selectElementHelper(state);
-}
-
-export default connect(mapStateToProps, {
+export default connect(null, {
   hoverElement,
   unHoverElement,
   updateElement,

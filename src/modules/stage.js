@@ -59,7 +59,6 @@ const hoveElementEpic = action$ =>
         (action.type === SET_ELEMENT_HOVER_STATE) &&
         action.payload.elementId != undefined // eslint-disable-line eqeqeq
     )
-    .auditTime(16)
     .map(action => {
       const elementId = action.payload.elementId;
       const node = document.querySelector(`[${EDITOR_NODE_ATTR}="${elementId}"]`);
@@ -150,17 +149,21 @@ export const selectActiveElement = state => {
   return element !== undefined ? element : {};
 };
 
-export const selectElementHelper = createSelector(
+export const selectHelperOutline = createSelector(
   selectActivedElementId,
   selectHoveredElementId,
-  selectActiveElementRect,
   selectHoverElementRect,
-  (activedElementId, hoveredElementId, activeElementRect, hoverElementRect) => ({
-    activedElementId,
-    hoveredElementId,
-    hoverElementRect,
-    activeElementRect,
-    isHoverElement: !!hoveredElementId,
-    isActiveElement: !!activedElementId,
+  (activedElementId, hoveredElementId, hoverElementRect) => ({
+    ...hoverElementRect,
+    isHoverElement: Boolean(hoveredElementId) && activedElementId !== hoveredElementId,
+  })
+);
+
+export const selectHelperResizer = createSelector(
+  selectActivedElementId,
+  selectActiveElementRect,
+  (activedElementId, activeElementRect) => ({
+    ...activeElementRect,
+    isActiveElement: Boolean(activedElementId),
   })
 );

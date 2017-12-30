@@ -3,6 +3,9 @@ $grid-line-width: 1px;
 
 .Stage {
   position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
   border-left: 1px #ddd solid;
   border-right: 1px #ddd solid;
   left: 0;

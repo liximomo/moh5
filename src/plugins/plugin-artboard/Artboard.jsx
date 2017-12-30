@@ -23,6 +23,8 @@ class Artboard extends React.Component {
         style={{
           height: height,
           width: width,
+          marginTop: 10,
+          backgroundColor: 'white',
         }}
         className="Artboard"
       >

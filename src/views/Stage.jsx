@@ -25,7 +25,6 @@ class Stage extends React.Component {
   }
 
   setNode(node) {
-    this.node = node;
     this.setState({
       hostNode: node,
     });
@@ -33,9 +32,12 @@ class Stage extends React.Component {
 
   render() {
     const { hostNode } = this.state;
+    const {
+      rootElementId,
+    } = this.props;
     return (
       <div className="Stage" ref={this.setNode}>
-        <EditorNode id={this.props.rootNodeId} />
+        <EditorNode id={rootElementId} />
         {hostNode ? <ElementHelper stageHostNode={hostNode} /> : null}
       </div>
     );
@@ -44,8 +46,9 @@ class Stage extends React.Component {
 
 function mapStateToProps(state) {
   // 返回一个  component node 对象
+  const artboard = selectArtBord(state);
   return {
-    rootNodeId: selectArtBord(state).id,
+    rootElementId: artboard.id,
   };
 }
 

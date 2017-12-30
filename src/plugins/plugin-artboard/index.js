@@ -1,4 +1,3 @@
-import './Artboard.style';
 import Artboard from './Artboard';
 import PropertyEditor from './PropertyEditor';
 import { ARTBOARD } from '../../TypeOfInternalComponent';
