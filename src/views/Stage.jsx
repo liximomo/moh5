@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { selectArtBord } from '../modules/elements';
-import { activateELement } from '../modules/stage';
 import EditorNode from './EditorNode';
 import ElementHelper from './ElementHelper';
 // import ResizeBox from '../libs/ResizeBox';
@@ -52,4 +51,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, { activateELement })(Stage);
+export default connect(mapStateToProps)(Stage);

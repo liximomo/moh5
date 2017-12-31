@@ -8,9 +8,8 @@ import {
   hoverElement,
   unHoverElement,
   activateELement,
+  clearActivedELement,
 } from '../../modules/stage';
-import { updateElement } from '../../modules/elements';
-// import ResizeBox from '../../libs/ResizeBox';
 
 class ElementHelper extends React.PureComponent {
   static propTypes = {
@@ -40,7 +39,8 @@ class ElementHelper extends React.PureComponent {
   }
 
   handleTopEvent(event) {
-    for (let target = event.target; target && target !== event.currentTarget; target = target.parentNode) {
+    const stageHostNode = this.props.stageHostNode;
+    for (let target = event.target; target && target !== stageHostNode.parentNode; target = target.parentNode) {
       if (target.matches && target.matches(`[${EDITOR_NODE_ATTR}]`)) {
         switch (event.type) {
           case 'mouseover':
@@ -59,18 +59,17 @@ class ElementHelper extends React.PureComponent {
 
         // break for
         break;
+      } else if (target === stageHostNode) {
+        switch (event.type) {
+          case 'click':
+            this.handleStageClick(event);
+            break;
+          default:
+            // do nothing
+            break;
+        }
       }
     }
-  }
-
-  removeTopEvent(eventname, handler, useCapture = false) {
-    if (!this.props.stageHostNode) {
-      return;
-    }
-
-    const listener = this.topEventListener.get(handler);
-    this.topEventListener.delete(handler);
-    this.props.stageHostNode.removeEventListener('mouseenter', listener, useCapture);
   }
 
   handleMouseOver(event) {
@@ -105,7 +104,7 @@ class ElementHelper extends React.PureComponent {
   }
 
   handleStageClick() {
-
+    this.props.clearActivedELement();
   }
 
   getStageArea() {
@@ -137,6 +136,6 @@ class ElementHelper extends React.PureComponent {
 export default connect(null, {
   hoverElement,
   unHoverElement,
-  updateElement,
   activateELement,
+  clearActivedELement,
 })(ElementHelper);

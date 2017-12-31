@@ -5,9 +5,9 @@ import { selectElement, CREATE_ELEMENT } from './elements';
 import { EDITOR_NODE_ATTR } from '../constants';
 
 const ELEMENT_MOUNTED = Symbol('ELEMENT_MOUNTED');
-const ACTIVATE_ELEMENT = Symbol('ACTIVATE_ELEMENT');
+const SET_ELEMENT_ACTIVE_STATE = Symbol('SET_ELEMENT_ACTIVE_STATE');
+const ACTIVATE_ELEMENT_WHEN_MOUNTED = Symbol('ACTIVATE_ELEMENT_WHEN_MOUNTED');
 const SET_ELEMENT_HOVER_STATE = Symbol('SET_ELEMENT_HOVER_STATE');
-const UPDATE_HOVER_ELEMENT_RECT = Symbol('UPDATE_HOVER_ELEMENT_RECT');
 const UPDATE_ACTIVE_ELEMENT_RECT = Symbol('UPDATE_ACTIVE_ELEMENT_RECT');
 
 const initialState = {
@@ -27,60 +27,63 @@ const initialState = {
   },
 };
 
-export const elementMounted = createAction(ELEMENT_MOUNTED);
-export const activateELement = createAction(ACTIVATE_ELEMENT);
-
 const updateActiveElementReact = createAction(UPDATE_ACTIVE_ELEMENT_RECT);
-const updateHoverElementReact = createAction(UPDATE_HOVER_ELEMENT_RECT);
 
-export const hoverElement = createAction(SET_ELEMENT_HOVER_STATE, ({ elementId }) => ({
-  elementId,
+export const elementMounted = createAction(ELEMENT_MOUNTED);
+export const activateELement = createAction(SET_ELEMENT_ACTIVE_STATE, ({ elementId }) => {
+  const node = document.querySelector(`[${EDITOR_NODE_ATTR}="${elementId}"]`);
+  const react = node.getBoundingClientRect();
+  return {
+    elementId,
+    elementRect: {
+      x: react.x,
+      y: react.y,
+      width: react.width,
+      height: react.height,
+    },
+  };
+});
+export const clearActivedELement = createAction(SET_ELEMENT_ACTIVE_STATE, () => ({
+  elementId: null,
 }));
+
+export const activateELementWhenMounted = createAction(ACTIVATE_ELEMENT_WHEN_MOUNTED);
+
+export const hoverElement = createAction(SET_ELEMENT_HOVER_STATE, ({ elementId }) => {
+  const node = document.querySelector(`[${EDITOR_NODE_ATTR}="${elementId}"]`);
+  const react = node.getBoundingClientRect();
+  return {
+    elementId,
+    elementRect: {
+      x: react.x,
+      y: react.y,
+      width: react.width,
+      height: react.height,
+    },
+  };
+});
 
 export const unHoverElement = createAction(SET_ELEMENT_HOVER_STATE, () => ({
   elementId: null,
 }));
 
 
-// 
+//
 // epics
 //
 
 const createElementEpic = action$ =>
-  action$.ofType(CREATE_ELEMENT)
-    .map(action => activateELement({
-      elementId: action.payload.id
-    }));
-
-const hoveElementEpic = action$ =>
-  action$
-    .filter(
-      action =>
-        (action.type === SET_ELEMENT_HOVER_STATE) &&
-        action.payload.elementId != undefined // eslint-disable-line eqeqeq
-    )
-    .map(action => {
-      const elementId = action.payload.elementId;
-      const node = document.querySelector(`[${EDITOR_NODE_ATTR}="${elementId}"]`);
-      const react = node.getBoundingClientRect();
-      return updateHoverElementReact({
-        x: react.x,
-        y: react.y,
-        width: react.width,
-        height: react.height,
-      });
-    });
+  action$.ofType(CREATE_ELEMENT).map(action =>
+    activateELementWhenMounted({
+      elementId: action.payload.id,
+    })
+  );
 
 const activeElementEpic = action$ =>
   action$
     .ofType(ELEMENT_MOUNTED)
     .withLatestFrom(
-      action$
-        .filter(
-          action =>
-            (action.type === ACTIVATE_ELEMENT) &&
-            action.payload.elementId != undefined // eslint-disable-line eqeqeq
-        ),
+      action$.ofType(ACTIVATE_ELEMENT_WHEN_MOUNTED),
       (_, action) => action
     )
     .distinctUntilChanged()
@@ -94,11 +97,31 @@ const activeElementEpic = action$ =>
         width: react.width,
         height: react.height,
       });
-    })
+    });
 
 export default handleActions(
   {
-    [ACTIVATE_ELEMENT](state, action) {
+    [SET_ELEMENT_ACTIVE_STATE](state, action) {
+      const {
+        elementId,
+        elementRect
+      } = action.payload;
+      if (elementId === state.activedElementId) {
+        return state;
+      }
+
+      const next = {
+        ...state,
+        activedElementId: elementId,
+      };
+
+      if (elementRect) {
+        next.activeElementRect = elementRect;
+      }
+
+      return next;
+    },
+    [ACTIVATE_ELEMENT_WHEN_MOUNTED](state, action) {
       const elementId = action.payload.elementId;
       if (elementId === state.activedElementId) {
         return state;
@@ -110,18 +133,24 @@ export default handleActions(
       };
     },
     [SET_ELEMENT_HOVER_STATE](state, action) {
-      return {
+      const {
+        elementId,
+        elementRect
+      } = action.payload;
+      if (elementId === state.hoveredElementId) {
+        return state;
+      }
+  
+      const next = {
         ...state,
-        hoveredElementId: action.payload.elementId,
+        hoveredElementId: elementId,
       };
-    },
-    [UPDATE_HOVER_ELEMENT_RECT](state, action) {
-      return {
-        ...state,
-        hoverElementRect: {
-          ...action.payload,
-        },
-      };
+
+      if (elementRect) {
+        next.hoverElementRect = elementRect;
+      }
+
+      return next;
     },
     [UPDATE_ACTIVE_ELEMENT_RECT](state, action) {
       return {
@@ -135,7 +164,10 @@ export default handleActions(
   initialState
 );
 
-export const editorEpic = combineEpics(createElementEpic, hoveElementEpic, activeElementEpic);
+export const editorEpic = combineEpics(
+  createElementEpic,
+  activeElementEpic,
+);
 
 export const selectStage = state => state.stage;
 

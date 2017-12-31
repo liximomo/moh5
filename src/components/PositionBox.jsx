@@ -6,18 +6,15 @@ import styled from 'styled-components';
 //   transform: props => `translate3d(${props.x - SIZE}px, ${props.y - SIZE}px, 0) scale3d(${props.width / SIZE}, ${props.height / SIZE}, 1)`,
 // })
 const PositionBox = styled.div`
-  will-change: opacity, transform;
+  will-change: transform;
   position: absolute;
   left: 0;
   top: 0;
   height: ${props => props.height}px;
   width: ${props => props.width}px;
   visibility: ${props => props.visible ? 'visible' : 'hidden'};
-  opacity: ${props => props.visible ? 1 : 0};
   transform: ${props => `translate3d(${props.x}px, ${props.y}px, 0)`};
   transform-origin: left top;
-  transition: 0.2s ease-in-out;
-  transition-property: opacity;
   touch-action: none;
   user-select: none;
   pointer-events: none;
