@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 // import cn from 'classnames';
 // import ResizeBox from '../libs/ResizeBox';
-import { EDITOR_NODE_ATTR } from '../constants';
+import { EDITOR_DOM_ATTR } from '../constants';
 import { selectElements, updateElement } from '../modules/elements';
 import { activateELement, elementMounted, selectActivedElementId } from '../modules/stage';
 import * as definedPropTypes from '../constants/proptypes';
@@ -79,7 +79,7 @@ class EditorNode extends React.PureComponent {
 
   getEditorProps() {
     return {
-      [EDITOR_NODE_ATTR]: this.props.id,
+      [EDITOR_DOM_ATTR]: this.props.id,
       // onMouseEnter: this.handleMouseEnter,
       // onMouseLeave: this.handleMouseLeave,
     };

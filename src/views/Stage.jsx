@@ -1,11 +1,30 @@
 import React from 'react';
+import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { selectArtBord } from '../modules/elements';
+import { STAGE_DOM_CLASS } from '../constants';
+// import { updateStateRect } from '../modules/stage';
 import EditorNode from './EditorNode';
 import ElementHelper from './ElementHelper';
 // import ResizeBox from '../libs/ResizeBox';
 
-import './Stage.scss';
+const gridCellSize = '4px';
+const gridLineWidth = '1px';
+
+const StageWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  border-left: 1px #ddd solid;
+  border-right: 1px #ddd solid;
+  width: 100%;
+  height: 100%;
+
+  background:
+    linear-gradient(to right, #ddd, #ddd ${gridLineWidth}, transparent 0, transparent),
+    linear-gradient(to bottom, #ddd, #ddd ${gridLineWidth}, transparent 0, transparent);
+  background-size: ${gridCellSize} 100%, 100% ${gridCellSize};
+`;
 
 class Stage extends React.Component {
   constructor(props) {
@@ -35,10 +54,10 @@ class Stage extends React.Component {
       rootElementId,
     } = this.props;
     return (
-      <div className="Stage" ref={this.setNode}>
+      <StageWrapper innerRef={this.setNode} className={STAGE_DOM_CLASS}>
         <EditorNode id={rootElementId} />
         {hostNode ? <ElementHelper stageHostNode={hostNode} /> : null}
-      </div>
+      </StageWrapper>
     );
   }
 }

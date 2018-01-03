@@ -2,7 +2,7 @@ import React from 'react';
 import ComponentGallery from './ComponentGallery';
 import './Toolbar.scss';
 
-class Toolbar extends React.Component {
+class Toolbar extends React.PureComponent {
   render() {
     return (
       <div className="Toolbar">

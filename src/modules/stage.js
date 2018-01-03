@@ -2,17 +2,26 @@ import { createAction, handleActions } from 'redux-actions';
 import { combineEpics } from 'redux-observable';
 import { createSelector } from 'reselect';
 import { selectElement, CREATE_ELEMENT } from './elements';
-import { EDITOR_NODE_ATTR } from '../constants';
+import { EDITOR_DOM_ATTR, STAGE_DOM_CLASS } from '../constants';
 
+const EVENT_STAGE_RESIZE = Symbol('EVENT_STAGE_RESIZE');
+
+const UPDATE_STAGE_RECT = Symbol('SET_STAGE_RECT');
+const UPDATE_STAGE = Symbol('UPDATE_STAGE');
 const ELEMENT_MOUNTED = Symbol('ELEMENT_MOUNTED');
 const SET_ELEMENT_ACTIVE_STATE = Symbol('SET_ELEMENT_ACTIVE_STATE');
 const ACTIVATE_ELEMENT_WHEN_MOUNTED = Symbol('ACTIVATE_ELEMENT_WHEN_MOUNTED');
 const SET_ELEMENT_HOVER_STATE = Symbol('SET_ELEMENT_HOVER_STATE');
-const UPDATE_ACTIVE_ELEMENT_RECT = Symbol('UPDATE_ACTIVE_ELEMENT_RECT');
 
 const initialState = {
   activedElementId: null,
   hoveredElementId: null,
+  rect: {
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+  },
   activeElementRect: {
     x: 0,
     y: 0,
@@ -27,11 +36,19 @@ const initialState = {
   },
 };
 
-const updateActiveElementReact = createAction(UPDATE_ACTIVE_ELEMENT_RECT);
+export const emitStageResize = createAction(EVENT_STAGE_RESIZE);
+export const updateStage = createAction(UPDATE_STAGE);
+
+export const updateStateRect = (rect) => updateStage({
+  rect,
+});
+const updateActiveElementRect = (rect) => updateStage({
+  activeElementRect: rect,
+});
 
 export const elementMounted = createAction(ELEMENT_MOUNTED);
 export const activateELement = createAction(SET_ELEMENT_ACTIVE_STATE, ({ elementId }) => {
-  const node = document.querySelector(`[${EDITOR_NODE_ATTR}="${elementId}"]`);
+  const node = document.querySelector(`[${EDITOR_DOM_ATTR}="${elementId}"]`);
   const react = node.getBoundingClientRect();
   return {
     elementId,
@@ -50,7 +67,7 @@ export const clearActivedELement = createAction(SET_ELEMENT_ACTIVE_STATE, () => 
 export const activateELementWhenMounted = createAction(ACTIVATE_ELEMENT_WHEN_MOUNTED);
 
 export const hoverElement = createAction(SET_ELEMENT_HOVER_STATE, ({ elementId }) => {
-  const node = document.querySelector(`[${EDITOR_NODE_ATTR}="${elementId}"]`);
+  const node = document.querySelector(`[${EDITOR_DOM_ATTR}="${elementId}"]`);
   const react = node.getBoundingClientRect();
   return {
     elementId,
@@ -89,9 +106,9 @@ const activeElementEpic = action$ =>
     .distinctUntilChanged()
     .map(action => {
       const elementId = action.payload.elementId;
-      const node = document.querySelector(`[${EDITOR_NODE_ATTR}="${elementId}"]`);
+      const node = document.querySelector(`[${EDITOR_DOM_ATTR}="${elementId}"]`);
       const react = node.getBoundingClientRect();
-      return updateActiveElementReact({
+      return updateActiveElementRect({
         x: react.x,
         y: react.y,
         width: react.width,
@@ -99,8 +116,39 @@ const activeElementEpic = action$ =>
       });
     });
 
+const stageResize = (action$, store) => {
+  return action$
+    .ofType(EVENT_STAGE_RESIZE)
+    .map(_ => {
+      const payload = {};
+      const state = store.getState();
+      const acitveElementId = selectActivedElementId(state);
+      const hoverElementId = selectHoveredElementId(state);
+      if (acitveElementId) {
+        const node = document.querySelector(`[${EDITOR_DOM_ATTR}="${acitveElementId}"]`);
+        payload.activeElementRect = node.getBoundingClientRect();
+      } else if (hoverElementId) {
+        const node = document.querySelector(`[${EDITOR_DOM_ATTR}="${hoverElementId}"]`);
+        payload.hoverElementRect = node.getBoundingClientRect();
+      }
+
+      const node = document.querySelector(`.${STAGE_DOM_CLASS}`);
+      payload.rect = node.getBoundingClientRect();
+      return updateStage(payload);
+    });
+}
+  
+
 export default handleActions(
-  {
+  { 
+    [UPDATE_STAGE_RECT](state, action) {
+      return {
+        ...state,
+        rect: {
+          ...action.payload,
+        },
+      };
+    },
     [SET_ELEMENT_ACTIVE_STATE](state, action) {
       const {
         elementId,
@@ -113,6 +161,7 @@ export default handleActions(
       const next = {
         ...state,
         activedElementId: elementId,
+        hoveredElementId: null,
       };
 
       if (elementRect) {
@@ -152,12 +201,10 @@ export default handleActions(
 
       return next;
     },
-    [UPDATE_ACTIVE_ELEMENT_RECT](state, action) {
+    [UPDATE_STAGE](state, action) {
       return {
         ...state,
-        activeElementRect: {
-          ...action.payload,
-        },
+        ...action.payload,
       };
     },
   },
@@ -167,10 +214,12 @@ export default handleActions(
 export const editorEpic = combineEpics(
   createElementEpic,
   activeElementEpic,
+  stageResize,
 );
 
 export const selectStage = state => state.stage;
 
+export const selectStageRect = state => selectStage(state).rect;
 export const selectActivedElementId = state => selectStage(state).activedElementId;
 export const selectHoveredElementId = state => selectStage(state).hoveredElementId;
 export const selectActiveElementRect = state => selectStage(state).activeElementRect;
@@ -182,20 +231,28 @@ export const selectActiveElement = state => {
 };
 
 export const selectHelperOutline = createSelector(
+  selectStageRect,
   selectActivedElementId,
   selectHoveredElementId,
   selectHoverElementRect,
-  (activedElementId, hoveredElementId, hoverElementRect) => ({
-    ...hoverElementRect,
+  (stageRect, activedElementId, hoveredElementId, hoverElementRect) => ({
+    x: hoverElementRect.x - stageRect.x,
+    y: hoverElementRect.y - stageRect.y,
+    width: hoverElementRect.width,
+    height: hoverElementRect.height,
     isHoverElement: Boolean(hoveredElementId) && activedElementId !== hoveredElementId,
   })
 );
 
 export const selectHelperResizer = createSelector(
+  selectStageRect,
   selectActivedElementId,
   selectActiveElementRect,
-  (activedElementId, activeElementRect) => ({
-    ...activeElementRect,
+  (stageRect, activedElementId, activeElementRect) => ({
+    x: activeElementRect.x - stageRect.x,
+    y: activeElementRect.y - stageRect.y,
+    width: activeElementRect.width,
+    height: activeElementRect.height,
     isActiveElement: Boolean(activedElementId),
   })
 );

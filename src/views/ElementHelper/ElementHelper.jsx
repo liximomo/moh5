@@ -1,7 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { EDITOR_NODE_ATTR } from '../../constants';
+import { selectActivedElementId } from '../../modules/stage.js';
+import { EDITOR_DOM_ATTR } from '../../constants';
 import HelperOutline from './HelperOutline';
 import HelperResizer from './HelperResizer';
 import {
@@ -41,7 +42,7 @@ class ElementHelper extends React.PureComponent {
   handleTopEvent(event) {
     const stageHostNode = this.props.stageHostNode;
     for (let target = event.target; target && target !== stageHostNode.parentNode; target = target.parentNode) {
-      if (target.matches && target.matches(`[${EDITOR_NODE_ATTR}]`)) {
+      if (target.matches && target.matches(`[${EDITOR_DOM_ATTR}]`)) {
         switch (event.type) {
           case 'mouseover':
             this.handleMouseOver(event);
@@ -73,7 +74,7 @@ class ElementHelper extends React.PureComponent {
   }
 
   handleMouseOver(event) {
-    const id = parseInt(event.target.getAttribute(EDITOR_NODE_ATTR), 10);
+    const id = parseInt(event.target.getAttribute(EDITOR_DOM_ATTR), 10);
     if (id === this.props.activedElementId) {
       return;
     }
@@ -84,7 +85,7 @@ class ElementHelper extends React.PureComponent {
   }
 
   handleMouseOut(event) {
-    const id = parseInt(event.target.getAttribute(EDITOR_NODE_ATTR), 10);
+    const id = parseInt(event.target.getAttribute(EDITOR_DOM_ATTR), 10);
     if (id === this.props.activedElementId) {
       return;
     }
@@ -93,7 +94,7 @@ class ElementHelper extends React.PureComponent {
   }
 
   handleClick(event) {
-    const id = parseInt(event.target.getAttribute(EDITOR_NODE_ATTR), 10);
+    const id = parseInt(event.target.getAttribute(EDITOR_DOM_ATTR), 10);
     if (id === this.props.activedElementId) {
       return;
     }
@@ -107,33 +108,32 @@ class ElementHelper extends React.PureComponent {
     this.props.clearActivedELement();
   }
 
-  getStageArea() {
-    if (this.stageArea) {
-      return this.stageArea;
-    }
+  // getStageArea() {
+  //   if (this.stageArea) {
+  //     return this.stageArea;
+  //   }
 
-    this.stageArea = this.props.stageHostNode.getBoundingClientRect();
-    return this.stageArea;
-  }
+  //   this.stageArea = this.props.stageHostNode.getBoundingClientRect();
+  //   return this.stageArea;
+  // }
 
   render() {
-    const parentReact = this.getStageArea();
     return (
       <div className="StageHelper">
-        <HelperOutline
-          parentOffsetX={parentReact.x}
-          parentOffsetY={parentReact.y}
-        />
-        <HelperResizer
-          parentOffsetX={parentReact.x}
-          parentOffsetY={parentReact.y}
-        />
+        <HelperOutline />
+        <HelperResizer />
       </div>
     );
   }
 }
 
-export default connect(null, {
+function mapStateToProps(state) {
+  return {
+    activedElementId: selectActivedElementId(state),
+  };
+}
+
+export default connect(mapStateToProps, {
   hoverElement,
   unHoverElement,
   activateELement,

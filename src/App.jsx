@@ -1,20 +1,43 @@
-import * as React from 'react';
+import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
-import SplitLayout from './layout/SplitLayout';
+import styled from 'styled-components';
+import theme from './style/theme.js';
+import SplitLayout from './components/SplitLayout';
 import Toolbar from './views/Toolbar';
 import ObjectTree from './views/ObjectTree';
 // import Artboard from './views/Artboard';
 import Stage from './views/Stage';
 import DragPreview from './views/DragPreview';
 import CommonPropertyEditor from './views/PropertyEditor/CommonPropertyEditor';
-// import { selectArtBord } from './modules/elements';
+import { emitStageResize } from './modules/stage.js';
 import './App.scss';
+
+const PropertyPanelWrapper = styled.div`
+  position: absolute;
+  width: ${theme.propertyPanel.width};
+  right: 0;
+  height: 100%;
+  overflow-y: scroll;
+`;
+
+const StageWrapper = styled.div`
+  position: absolute;
+  left: 0;
+  right: ${theme.propertyPanel.width};
+  height: 100%;
+  overflow-y: scroll;
+`;
 
 class App extends React.Component {
   state = {
     size: [240],
     maxSize: [500],
   };
+
+  constructor(props) {
+    super(props);
+    this.handleLayoutResized = this.handleLayoutResized.bind(this);
+  }
 
   componentDidMount() {}
 
@@ -33,14 +56,20 @@ class App extends React.Component {
   renderRight = () => {
     // const node = createNode('Screen', { width: 414, height: 736 });
     return (
-      <div className="rightPart">
-        <Stage />
-        <div className="APP__fixSide">
+      <Fragment>
+        <StageWrapper>
+          <Stage />
+        </StageWrapper>
+        <PropertyPanelWrapper>
           <CommonPropertyEditor />
-        </div>
-      </div>
+        </PropertyPanelWrapper>
+      </Fragment>
     );
   };
+
+  handleLayoutResized() {
+    this.props.emitStageResize();
+  }
 
   render() {
     return (
@@ -48,21 +77,23 @@ class App extends React.Component {
         <DragPreview/>
         <Toolbar />
         <SplitLayout
+          style={{ minWidth: 1000 }}
           size={this.state.size}
           minSize={this.state.minSize}
           maxSize={this.state.maxSize}
           renders={[this.renderLeft, this.renderRight]}
+          onResized={this.handleLayoutResized}
         />
       </div>
     );
   }
 }
 
-function mapStateToProps(_) {
-  // 返回一个  component node 对象
-  return {
-    // rootNodeId: selectArtBord(state).id,
-  };
-}
+// function mapStateToProps(_) {
+//   // 返回一个  component node 对象
+//   return {
+//     // rootNodeId: selectArtBord(state).id,
+//   };
+// }
 
-export default connect(mapStateToProps)(App);
+export default connect(null, { emitStageResize })(App);
