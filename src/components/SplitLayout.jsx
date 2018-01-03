@@ -40,6 +40,16 @@ const Sash = styled.div`
 
 const TValues = PropTypes.oneOfType([PropTypes.string, PropTypes.number]);
 
+const requestAnimFrame =
+    window.requestAnimationFrame ||
+    window.webkitRequestAnimationFrame ||
+    window.mozRequestAnimationFrame ||
+    window.oRequestAnimationFrame ||
+    window.msRequestAnimationFrame ||
+    function(cb) {
+      window.setTimeout(cb, 1000 / 60);
+    };
+
 class SplitLayout extends React.Component {
   static propTypes = {
     style: PropTypes.object,
@@ -78,8 +88,11 @@ class SplitLayout extends React.Component {
       containerRect: null,
       columnOffsets: this.calculateColumnOffsetsFromProps(props),
     };
+
     this.sashDoms = [];
     this.onProperChange(props);
+
+    this.update = this.update.bind(this);
   }
 
   onProperChange(props) {
@@ -192,7 +205,7 @@ class SplitLayout extends React.Component {
     this.sashIndex = this.sashDoms.indexOf(event.target);
     this.sash = event.target;
 
-    this.offset = {
+    this.adjustOffset = {
       x: this.sash.offsetLeft - event.clientX,
       y: this.sash.offsetTop - event.clientY,
     };
@@ -203,8 +216,12 @@ class SplitLayout extends React.Component {
   };
 
   handleMouseMove = event => {
-    const offset = event.clientX + this.offset.x;
-    this.update(offset, this.sashIndex);
+    this.offset = event.clientX + this.adjustOffset.x;
+    console.log(this.offset);
+    if (!this.ticking) {
+      requestAnimFrame(this.update);
+    }
+    this.ticking = true;
   };
 
   handleMouseUp = () => {
@@ -213,10 +230,12 @@ class SplitLayout extends React.Component {
     document.removeEventListener('mouseup', this.handleMouseUp, false);
   };
 
-  update(offset, index) {
-    const sashOffset = this.calcSashOffset(this.state.columnOffsets[index]);
-    const delta = offset - sashOffset;
-    const firstSize = offset + this.props.sashSize / 2;
+  update() {
+    this.ticking = false;
+
+    const sashOffset = this.calcSashOffset(this.state.columnOffsets[this.sashIndex]);
+    const delta = this.offset  - sashOffset;
+    const firstSize = this.offset  + this.props.sashSize / 2;
     const lastSize = this.state.containerRect.width - firstSize;
     const [firstMin, lastMin] = this.min;
     const [firstMax, lastMax] = this.max;
@@ -232,7 +251,7 @@ class SplitLayout extends React.Component {
         return;
       }
 
-      offsets = [offset];
+      offsets = [this.offset];
     } else {
       if (firstMin && firstSize < firstMin) {
         return;
@@ -242,7 +261,7 @@ class SplitLayout extends React.Component {
         return;
       }
 
-      offsets = [offset];
+      offsets = [this.offset];
     }
 
     this.setState({

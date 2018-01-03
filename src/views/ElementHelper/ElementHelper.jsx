@@ -108,15 +108,6 @@ class ElementHelper extends React.PureComponent {
     this.props.clearActivedELement();
   }
 
-  // getStageArea() {
-  //   if (this.stageArea) {
-  //     return this.stageArea;
-  //   }
-
-  //   this.stageArea = this.props.stageHostNode.getBoundingClientRect();
-  //   return this.stageArea;
-  // }
-
   render() {
     return (
       <div className="StageHelper">

@@ -15,9 +15,7 @@ const PositionBox = styled.div`
   visibility: ${props => props.visible ? 'visible' : 'hidden'};
   transform: ${props => `translate3d(${props.x}px, ${props.y}px, 0)`};
   transform-origin: left top;
-  touch-action: none;
   user-select: none;
-  pointer-events: none;
 `;
 
 PositionBox.propTypes = {
