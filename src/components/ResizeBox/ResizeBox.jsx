@@ -6,10 +6,6 @@ import './ResizeBox.scss';
 
 const resizingClass = 'is-resizing';
 
-const DIRECTION_LEFT_RIGHT = 'DIRECTION_LEFT_RIGHT';
-const DIRECTION_TOP_BOTTOM = 'DIRECTION_TOP_BOTTOM';
-const DIRECTION_ALL = 'DIRECTION_ALL';
-
 class ResizeBox extends React.PureComponent {
   static RESIZER_TOP_LEFT = 'topLeft';
   static RESIZER_TOP = 'top';
@@ -32,8 +28,10 @@ class ResizeBox extends React.PureComponent {
       [ResizeBox.RESIZER_BOTTOM]: PropTypes.bool,
       [ResizeBox.RESIZER_BOTTOM_RIGHT]: PropTypes.bool,
     }),
-    width: PropTypes.number,
-    height: PropTypes.number,
+    x: PropTypes.number,
+    y: PropTypes.number,
+    width: PropTypes.number.isRequired,
+    height: PropTypes.number.isRequired,
     minWidth: PropTypes.number,
     minHeight: PropTypes.number,
     maxWidth: PropTypes.number,
@@ -41,6 +39,8 @@ class ResizeBox extends React.PureComponent {
   };
 
   static defaultProps = {
+    x: 0,
+    y: 0,
     minWidth: 0,
     minHeight: 0,
     resizer: {
@@ -58,9 +58,27 @@ class ResizeBox extends React.PureComponent {
   constructor(props) {
     super(props);
 
+    this.state = {
+      ...this.getStateFromProps(props),
+    };
+
+    this.setDomNode = this.setDomNode.bind(this);
     this.handleMouseDown = this.handleMouseDown.bind(this);
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleMouseUp = this.handleMouseUp.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState(this.getStateFromProps(nextProps));
+  }
+
+  getStateFromProps(props) {
+    return {
+      x: props.x,
+      y: props.y,
+      width: props.width,
+      height: props.height,
+    };
   }
 
   handleMouseMove(event) {
@@ -68,35 +86,42 @@ class ResizeBox extends React.PureComponent {
     let verticalOffset = event.clientY - this.startY;
 
     const config = anchorMap[this.ahchor];
-    const direction = config.direction;
+    // horizenOffset *= config.offsetXCoefficient;
+    // verticalOffset *= config.offsetYCoefficient;
 
-    if (direction === DIRECTION_LEFT_RIGHT) {
-      verticalOffset = 0;
-    } else if (direction === DIRECTION_TOP_BOTTOM) {
-      horizenOffset = 0;
+    let width = Math.max(0, this.props.minWidth, this.width + horizenOffset * config.offsetXCoefficient);
+
+    if (this.props.maxWidth !== undefined) {
+      width = Math.min(width, this.props.maxWidth);
     }
 
-    let width;
-    if (this.width !== undefined) {
-      width = Math.max(0, this.props.minWidth, this.width + horizenOffset);
-
-      if (this.props.maxWidth !== undefined) {
-        width = Math.min(width, this.props.maxWidth);
-      }
+    let height = Math.max(0, this.props.minHeight, this.height + verticalOffset * config.offsetYCoefficient);
+    if (this.props.maxHeight !== undefined) {
+      height = Math.min(height, this.props.maxHeight);
     }
 
-    let height;
-    if (this.height !== undefined) {
-      height = Math.max(0, this.props.minHeight, this.height + verticalOffset);
-      if (this.props.maxHeight !== undefined) {
-        height = Math.min(height, this.props.maxHeight);
-      }
+    // horizenOffset *= config.offsetXCoefficient;
+    // verticalOffset *= config.offsetYCoefficient;
+
+    let x = this.x;
+    if (config.offsetXCoefficient === -1) {
+      x += Math.min(this.width, horizenOffset);
     }
 
-    this.props.onResize(event, {
+    let y = this.y;
+    if (config.offsetYCoefficient === -1) {
+      y += Math.min(this.height, verticalOffset);
+    }
+
+    console.log(horizenOffset, verticalOffset);
+    const rect = {
+      x,
+      y,
       width,
       height,
-    });
+    };
+    this.setState(rect);
+    this.props.onResize(event, rect);
   }
 
   handleMouseUp() {
@@ -109,14 +134,20 @@ class ResizeBox extends React.PureComponent {
   }
 
   handleMouseDown(event) {
-    const config = anchorMap[this.ahchor];
+    if (!this.props.width || !this.props.height) {
+      return;
+    }
 
     // 记录宽高，防止属性更新影响计算
     this.width = this.props.width;
     this.height = this.props.height;
-
+    this.x = this.props.x;
+    this.y = this.props.y;
     this.startX = event.clientX;
     this.startY = event.clientY;
+
+    const config = anchorMap[this.ahchor];
+
     document.documentElement.classList.add(resizingClass, config.cursor);
     document.addEventListener('mousemove', this.handleMouseMove, true);
     document.addEventListener('mouseup', this.handleMouseUp, true);
@@ -129,11 +160,24 @@ class ResizeBox extends React.PureComponent {
     };
   }
 
+  setDomNode(node) {
+    this.domNode = node;
+  }
+
   render() {
-    const { x, y, width, height, visible, resizer } = this.props;
+    const { x, y, width, height } = this.state;
+    const { visible, resizer } = this.props;
 
     return (
-      <PositionBox className="ResizeBox" x={x} y={y} width={width} height={height} visible={visible}>
+      <PositionBox
+        className="ResizeBox"
+        x={x}
+        y={y}
+        width={width}
+        height={height}
+        innerRef={this.setDomNode}
+        visible={visible}
+      >
         {resizerOrders.map(resizerName => {
           if (!resizer[resizerName]) {
             return null;
@@ -164,35 +208,43 @@ const resizerOrders = [
 ];
 const anchorMap = {
   [ResizeBox.RESIZER_TOP_LEFT]: {
-    direction: DIRECTION_ALL,
+    offsetXCoefficient: -1,
+    offsetYCoefficient: -1,
     cursor: 'nwse-resize',
   },
   [ResizeBox.RESIZER_TOP]: {
-    direction: DIRECTION_TOP_BOTTOM,
+    offsetXCoefficient: 0, // nerver mind
+    offsetYCoefficient: -1,
     cursor: 'ns-resize',
   },
   [ResizeBox.RESIZER_TOP_RIGHT]: {
-    direction: DIRECTION_ALL,
+    offsetXCoefficient: 1,
+    offsetYCoefficient: -1,
     cursor: 'nesw-resize',
   },
   [ResizeBox.RESIZER_LEFT]: {
-    direction: DIRECTION_LEFT_RIGHT,
+    offsetXCoefficient: -1,
+    offsetYCoefficient: 0, // nerver mind
     cursor: 'ew-resize',
   },
   [ResizeBox.RESIZER_RIGHT]: {
-    direction: DIRECTION_LEFT_RIGHT,
+    offsetXCoefficient: 1,
+    offsetYCoefficient: 0, // nerver mind
     cursor: 'ew-resize',
   },
   [ResizeBox.RESIZER_BOTTOM_LEFT]: {
-    direction: DIRECTION_ALL,
+    offsetXCoefficient: -1,
+    offsetYCoefficient: 1,
     cursor: 'nesw-resize',
   },
   [ResizeBox.RESIZER_BOTTOM]: {
-    direction: DIRECTION_TOP_BOTTOM,
+    offsetXCoefficient: 0, // nerver mind
+    offsetYCoefficient: 1,
     cursor: 'ns-resize',
   },
   [ResizeBox.RESIZER_BOTTOM_RIGHT]: {
-    direction: DIRECTION_ALL,
+    offsetXCoefficient: 1,
+    offsetYCoefficient: 1,
     cursor: 'nwse-resize',
   },
 };

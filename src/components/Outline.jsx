@@ -10,8 +10,6 @@ const Outline = PositionBox.extend`
   transition: 0.2s ease-in-out;
   transition-property: opacity;
   border: 1px dashed green;
-  touch-action: none;
-  pointer-events: none;
 `;
 
 export default Outline;

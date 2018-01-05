@@ -3,7 +3,11 @@ import { connect } from 'react-redux';
 import ResizeBox from '../../components/ResizeBox';
 import {
   selectHelperResizer,
+  selectActivedElementId,
 } from '../../modules/stage';
+import {
+  updateElement,
+} from '../../modules/elements';
 
 class HelperResizer extends React.PureComponent {
   constructor(props) {
@@ -36,7 +40,10 @@ class HelperResizer extends React.PureComponent {
 }
 
 function mapStateToProps(state) {
-  return selectHelperResizer(state);
+  return {
+    activedElementId: selectActivedElementId(state),
+    ...selectHelperResizer(state),
+  };
 }
 
-export default connect(mapStateToProps)(HelperResizer);
+export default connect(mapStateToProps, { updateElement })(HelperResizer);

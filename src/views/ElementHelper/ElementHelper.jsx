@@ -40,6 +40,10 @@ class ElementHelper extends React.PureComponent {
   }
 
   handleTopEvent(event) {
+    if (this.domNode.contains(event.target)) {
+      return;
+    }
+
     const stageHostNode = this.props.stageHostNode;
     for (let target = event.target; target && target !== stageHostNode.parentNode; target = target.parentNode) {
       if (target.matches && target.matches(`[${EDITOR_DOM_ATTR}]`)) {
@@ -108,9 +112,13 @@ class ElementHelper extends React.PureComponent {
     this.props.clearActivedELement();
   }
 
+  setDomNode = (node) => {
+    this.domNode = node;
+  }
+
   render() {
     return (
-      <div className="StageHelper">
+      <div className="StageHelper" ref={this.setDomNode}>
         <HelperOutline />
         <HelperResizer />
       </div>

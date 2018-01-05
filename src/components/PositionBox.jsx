@@ -5,17 +5,22 @@ import styled from 'styled-components';
 // .attrs({
 //   transform: props => `translate3d(${props.x - SIZE}px, ${props.y - SIZE}px, 0) scale3d(${props.width / SIZE}, ${props.height / SIZE}, 1)`,
 // })
-const PositionBox = styled.div`
+const PositionBox = styled.div.attrs({
+  style: ({ x, y, height, width }) => ({
+    height: `${height}px`,
+    width: `${width}px`,
+    transform: `translate3d(${x}px, ${y}px, 0)`,
+  })
+})`
   will-change: transform;
   position: absolute;
   left: 0;
   top: 0;
-  height: ${props => props.height}px;
-  width: ${props => props.width}px;
   visibility: ${props => props.visible ? 'visible' : 'hidden'};
-  transform: ${props => `translate3d(${props.x}px, ${props.y}px, 0)`};
   transform-origin: left top;
   user-select: none;
+  touch-action: none;
+  pointer-events: none;
 `;
 
 PositionBox.propTypes = {

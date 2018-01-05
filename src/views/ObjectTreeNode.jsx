@@ -126,7 +126,14 @@ class ObjectTreeNode extends React.PureComponent {
 
   handleClick(event) {
     event.stopPropagation();
+
+    // 根节点 或者 激活状态
+    if (!this.props.pid || this.props.isActive) {
+      return;
+    }
+
     const { id, activateELement } = this.props;
+    
     activateELement({
       elementId: id,
     });
